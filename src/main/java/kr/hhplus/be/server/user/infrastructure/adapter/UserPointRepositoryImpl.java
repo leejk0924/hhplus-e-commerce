@@ -17,4 +17,11 @@ public class UserPointRepositoryImpl implements UserPointRepository {
         User user = userEntityRepository.findById(userId).orElseThrow(UserNotFoundException::new);
         return new BalancePoint(user.hasBalanced());
     }
+    @Override
+    public BalancePoint savePoint(Long userId, int amount) {
+        User user = userEntityRepository.findById(userId).orElseThrow(UserNotFoundException::new);
+        user.chargePoint(amount);
+        User savedUser = userEntityRepository.save(user);
+        return new BalancePoint(savedUser.hasBalanced());
+    }
 }

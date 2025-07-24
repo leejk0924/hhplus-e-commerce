@@ -4,4 +4,5 @@ import kr.hhplus.be.server.user.domain.BalancePoint;
 
 public interface UserPointRepository {
     BalancePoint loadPoint(Long userId);
+    BalancePoint savePoint(Long userId, int amount);
 }

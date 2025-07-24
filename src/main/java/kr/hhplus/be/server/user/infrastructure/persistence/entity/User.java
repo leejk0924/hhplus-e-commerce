@@ -21,8 +21,10 @@ public class User extends BaseTime {
         this.pointBalance = pointBalance;
         this.username = username;
     }
-
     public Integer hasBalanced() {
         return this.pointBalance == null ? 0 : this.pointBalance;
+    }
+    public void chargePoint(int point) {
+        this.pointBalance += point;
     }
 }

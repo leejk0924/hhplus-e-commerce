@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.user.domain;
 
+import kr.hhplus.be.server.exception.ExceededPointBalanceException;
+import kr.hhplus.be.server.exception.InvalidChargeAmountException;
 import kr.hhplus.be.server.exception.InvalidPointAmountException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,9 +16,18 @@ public class BalancePoint {
         if (this.balance == null) {
             this.balance = 0;
         }
-        if (this.balance < MIN_POINT || this.balance > MAX_POINT) {
-            throw new InvalidPointAmountException();
+        validPoint(this.balance, new InvalidPointAmountException());
+    }
+    public void chargePoint(int amount) {
+        validPoint(amount, new InvalidChargeAmountException());
+        this.balance += amount;
+        if (this.balance > MAX_POINT) {
+            throw new ExceededPointBalanceException();
         }
-
+    }
+    private static void validPoint(int amount, RuntimeException exception) {
+        if (amount < MIN_POINT || amount > MAX_POINT) {
+            throw exception;
+        }
     }
 }

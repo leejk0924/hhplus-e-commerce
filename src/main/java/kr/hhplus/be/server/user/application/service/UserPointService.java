@@ -15,4 +15,10 @@ public class UserPointService {
         balancePoint.isValid();
         return BalanceDto.toDto(balancePoint);
     }
+    public BalanceDto chargePoint(Long userId, int point) {
+        BalancePoint balancePoint = userPointRepository.loadPoint(userId);
+        balancePoint.chargePoint(point);
+        BalancePoint savedPoint = userPointRepository.savePoint(userId, balancePoint.getBalance());
+        return BalanceDto.toDto(savedPoint);
+    }
 }

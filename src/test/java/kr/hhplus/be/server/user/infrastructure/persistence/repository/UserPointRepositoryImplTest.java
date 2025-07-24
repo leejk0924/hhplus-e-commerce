@@ -61,4 +61,25 @@ class UserPointRepositoryImplTest {
         // Then
         assertThat(balancePoint.getBalance()).isEqualTo(initPoint);
     }
+    @DisplayName("[RepositoryImpl:단위테스트] : 포인트 저장 테스트")
+    @Test
+    void 포인트_저장_성공_테스트() throws Exception {
+        // Given
+        Long userId = 1L;
+        int initPoint = 1;
+        int chargePoint = 1;
+        int expectedPoint = initPoint + chargePoint;
+        User user = User.builder()
+                .username("test")
+                .pointBalance(initPoint)
+                .build();
+        given(usersEntityRepository.findById(userId)).willReturn(Optional.of(user));
+        given(usersEntityRepository.save(user)).willReturn(user);
+
+        // When
+        BalancePoint balancePoint = sut.savePoint(userId, chargePoint);
+
+        // Then
+        assertThat(balancePoint.getBalance()).isEqualTo(expectedPoint);
+    }
 }
