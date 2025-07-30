@@ -1,9 +1,8 @@
 package kr.hhplus.be.server.user.application.service;
 
-import kr.hhplus.be.server.user.application.dto.BalanceDto;
+import kr.hhplus.be.server.user.application.dto.PointDto;
 import kr.hhplus.be.server.user.application.repository.UserPointRepository;
-
-import kr.hhplus.be.server.user.domain.BalancePoint;
+import kr.hhplus.be.server.user.domain.entity.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -30,11 +30,11 @@ class UserPointServiceTest {
     void 포인트_조회_서비스_테스트(Integer amount) throws Exception {
         // Given
         Long userId = 1L;
-        BalancePoint balancePoint = new BalancePoint(amount);
+        User balancePoint = User.of(userId, "test", amount);
         given(userPointRepository.loadPoint(anyLong())).willReturn(balancePoint);
 
         // When
-        BalanceDto result = sut.loadPoint(userId);
+        PointDto result = sut.loadPoint(userId);
 
         // Then
         verify(userPointRepository).loadPoint(anyLong());
@@ -48,16 +48,14 @@ class UserPointServiceTest {
         int initPoint = 1;
         int chargePoint = 1;
         int expectedPoint = initPoint + chargePoint;
-        BalancePoint balancePoint = new BalancePoint(initPoint);
-        given(userPointRepository.loadPoint(anyLong())).willReturn(balancePoint);
-        given(userPointRepository.savePoint(anyLong(), anyInt())).willReturn(balancePoint);
+        User user = User.of(userId, "test", initPoint);
+        given(userPointRepository.loadPoint(anyLong())).willReturn(user);
 
         // When
-        BalanceDto result = sut.chargePoint(userId, chargePoint);
+        PointDto result = sut.chargePoint(userId, chargePoint);
 
         // Then
         verify(userPointRepository).loadPoint(anyLong());
-        verify(userPointRepository).savePoint(anyLong(), anyInt());
         assertThat(result.balance()).isEqualTo(expectedPoint);
     }
 }

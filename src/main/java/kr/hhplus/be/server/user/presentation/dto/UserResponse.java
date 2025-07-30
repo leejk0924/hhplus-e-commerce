@@ -1,9 +1,17 @@
 package kr.hhplus.be.server.user.presentation.dto;
 
-import kr.hhplus.be.server.user.application.dto.BalanceDto;
+import kr.hhplus.be.server.user.application.dto.PointDto;
 
-public record UserResponse(Integer point) {
-    public static UserResponse from(BalanceDto balanceDto) {
-        return new UserResponse(balanceDto.balance());
+public class UserResponse {
+    public record ChargePointDto(Integer point) {
+
+        public static ChargePointDto from(PointDto pointDto) {
+            return new ChargePointDto(pointDto.balance());
+        }
+    }
+    public record CheckPointDto(Integer point) {
+        public static CheckPointDto from(PointDto pointDto) {
+            return new CheckPointDto(pointDto.balance());
+        }
     }
 }

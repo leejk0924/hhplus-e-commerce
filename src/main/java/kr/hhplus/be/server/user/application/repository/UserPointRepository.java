@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.user.application.repository;
 
-import kr.hhplus.be.server.user.domain.BalancePoint;
+import kr.hhplus.be.server.user.domain.entity.User;
 
 public interface UserPointRepository {
-    BalancePoint loadPoint(Long userId);
-    BalancePoint savePoint(Long userId, int amount);
+    User loadPoint(Long userId);
+    User chargePoint(Long userId, int amount);
 }

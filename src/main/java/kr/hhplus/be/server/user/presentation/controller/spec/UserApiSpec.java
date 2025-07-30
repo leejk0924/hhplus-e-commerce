@@ -1,12 +1,10 @@
-package kr.hhplus.be.server.controller.spec;
+package kr.hhplus.be.server.user.presentation.controller.spec;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kr.hhplus.be.server.domain.dto.UserRequest;
-import kr.hhplus.be.server.domain.dto.UserResponse;
+import kr.hhplus.be.server.user.presentation.dto.UserRequest;
+import kr.hhplus.be.server.user.presentation.dto.UserResponse;
 import org.springframework.http.ResponseEntity;
-
-import java.util.Map;
 
 @Tag(name = "유저", description = "유저 관련 API")
 public interface UserApiSpec {

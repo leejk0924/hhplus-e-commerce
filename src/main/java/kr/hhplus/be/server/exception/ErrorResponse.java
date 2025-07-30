@@ -1,9 +1,14 @@
 package kr.hhplus.be.server.exception;
 
-import lombok.Builder;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Builder
-public record ErrorResponse(
-        String code,
-        String message
-) {}
+@Getter
+@RequiredArgsConstructor
+public class ErrorResponse {
+    private final String code;
+    private final String message;
+        public static ErrorResponse of(ErrorCode errorCode) {
+            return new ErrorResponse(errorCode.name(), errorCode.getMessage());
+    }
+}

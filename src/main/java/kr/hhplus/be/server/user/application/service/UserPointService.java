@@ -1,24 +1,24 @@
 package kr.hhplus.be.server.user.application.service;
 
+import jakarta.transaction.Transactional;
+import kr.hhplus.be.server.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import kr.hhplus.be.server.user.application.dto.BalanceDto;
+import kr.hhplus.be.server.user.application.dto.PointDto;
 import kr.hhplus.be.server.user.application.repository.UserPointRepository;
-import kr.hhplus.be.server.user.domain.BalancePoint;
 
 @Service
 @RequiredArgsConstructor
 public class UserPointService {
     private final UserPointRepository userPointRepository;
-    public BalanceDto loadPoint(Long userId) {
-        BalancePoint balancePoint = userPointRepository.loadPoint(userId);
-        balancePoint.isValid();
-        return BalanceDto.toDto(balancePoint);
+    public PointDto loadPoint(Long userId) {
+        User user = userPointRepository.loadPoint(userId);
+        return PointDto.toDto(user);
     }
-    public BalanceDto chargePoint(Long userId, int point) {
-        BalancePoint balancePoint = userPointRepository.loadPoint(userId);
-        balancePoint.chargePoint(point);
-        BalancePoint savedPoint = userPointRepository.savePoint(userId, balancePoint.getBalance());
-        return BalanceDto.toDto(savedPoint);
+    @Transactional
+    public PointDto chargePoint(Long userId, int point) {
+        User user = userPointRepository.loadPoint(userId);
+        user.chargePoint(point);
+        return PointDto.toDto(user);
     }
 }

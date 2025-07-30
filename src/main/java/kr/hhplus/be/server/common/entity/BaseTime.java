@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.user.infrastructure.persistence.entity;
+package kr.hhplus.be.server.common.entity;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

@@ -1,12 +1,11 @@
 package kr.hhplus.be.server.user.infrastructure.persistence.repository;
 
-import kr.hhplus.be.server.exception.UserErrorCode;
-import kr.hhplus.be.server.exception.UserNotFoundException;
+import kr.hhplus.be.server.exception.RestApiException;
 import kr.hhplus.be.server.user.application.repository.UserPointRepository;
-import kr.hhplus.be.server.user.domain.BalancePoint;
-import kr.hhplus.be.server.user.infrastructure.persistence.entity.User;
-import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
+import kr.hhplus.be.server.user.domain.entity.User;
+import kr.hhplus.be.server.user.exception.UserErrorCode;
 import kr.hhplus.be.server.user.infrastructure.adapter.UserPointRepositoryImpl;
+import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +39,7 @@ class UserPointRepositoryImplTest {
         given(usersEntityRepository.findById(userId)).willReturn(Optional.empty());
 
         // When && Then
-        Assertions.assertThatExceptionOfType(UserNotFoundException.class)
+        Assertions.assertThatExceptionOfType(RestApiException.class)
                 .isThrownBy(() -> sut.loadPoint(userId))
                 .withMessage(UserErrorCode.USER_NOT_FOUND.getMessage());
     }
@@ -49,37 +49,32 @@ class UserPointRepositoryImplTest {
         // Given
         Long userId = 1L;
         int initPoint = 1;
-        User user = User.builder()
-                .username("test")
-                .pointBalance(initPoint)
-                .build();
-        given(usersEntityRepository.findById(userId)).willReturn(Optional.of(user));
+        User initUser = new User(userId, "test", initPoint);
+
+        given(usersEntityRepository.findById(userId)).willReturn(Optional.of(initUser));
 
         // When
-        BalancePoint balancePoint = sut.loadPoint(userId);
+        User target = sut.loadPoint(userId);
 
         // Then
-        assertThat(balancePoint.getBalance()).isEqualTo(initPoint);
+        assertThat(target.hasBalanced()).isEqualTo(initPoint);
     }
-    @DisplayName("[RepositoryImpl:단위테스트] : 포인트 저장 테스트")
+    @DisplayName("[RepositoryImpl:단위테스트] : 포인트 충전 테스트")
     @Test
     void 포인트_저장_성공_테스트() throws Exception {
         // Given
-        Long userId = 1L;
+        long userId = 1L;
         int initPoint = 1;
         int chargePoint = 1;
         int expectedPoint = initPoint + chargePoint;
-        User user = User.builder()
-                .username("test")
-                .pointBalance(initPoint)
-                .build();
-        given(usersEntityRepository.findById(userId)).willReturn(Optional.of(user));
-        given(usersEntityRepository.save(user)).willReturn(user);
+        User user = new User(userId, "test", initPoint);
+
+        given(usersEntityRepository.findById(anyLong())).willReturn(Optional.of(user));
 
         // When
-        BalancePoint balancePoint = sut.savePoint(userId, chargePoint);
+        User result = sut.chargePoint(userId, chargePoint);
 
         // Then
-        assertThat(balancePoint.getBalance()).isEqualTo(expectedPoint);
+        assertThat(result.hasBalanced()).isEqualTo(expectedPoint);
     }
 }

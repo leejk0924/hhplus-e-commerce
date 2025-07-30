@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.user.presentation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.hhplus.be.server.user.infrastructure.persistence.entity.User;
+import kr.hhplus.be.server.user.domain.entity.User;
 import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
 import kr.hhplus.be.server.user.presentation.dto.UserRequest;
 import org.junit.jupiter.api.DisplayName;
@@ -38,12 +38,12 @@ public class UserPointControllerTest {
         // Given
         long userId = 1L;
         int point = 1000;
-        User user = User.builder().pointBalance(point).username("testName").build();
+        User user = new User(userId, "test", point);
         given(usersEntityRepository.findById(userId)).willReturn(Optional.of(user));
 
         // When && Then
         mockMvc.perform(
-                        get("/users/{id}/points", userId)
+                        get("/api/users/{id}/points", userId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .accept(MediaType.APPLICATION_JSON)
                 )
@@ -57,10 +57,10 @@ public class UserPointControllerTest {
         Long userId = 1L;
         int initPoint = 1000;
         int chargePoint = 1000;
+        int expectPoint = initPoint + chargePoint;
         String userName = "testName";
-        User initUser = User.builder().pointBalance(initPoint).username(userName).build();
-        User savedUser = User.builder().pointBalance(initPoint).username(userName).build();
-
+        User initUser = new User(userId, userName, initPoint);
+        User savedUser = new User(userId, userName, initPoint);
         UserRequest.ChargePointDto request = new UserRequest.ChargePointDto(chargePoint);
         String requestJson = objectMapper.writeValueAsString(request);
 
@@ -69,12 +69,12 @@ public class UserPointControllerTest {
 
         // When && Then
         mockMvc.perform(
-                post("/users/{id}/points", userId)
+                post("/api/users/{id}/points", userId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
                         .content(requestJson)
         )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.point").value(chargePoint));
+                .andExpect(jsonPath("$.point").value(expectPoint));
     }
 }
