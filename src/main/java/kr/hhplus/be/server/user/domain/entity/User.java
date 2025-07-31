@@ -18,7 +18,7 @@ public class User extends BaseTime {
     @Id
     @Column(name = "ID", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "USER_NAME", length = 50, nullable = false)
     private String username;
     @Column(name = "POINT_BALANCE", columnDefinition = "INT UNSIGNED")
