@@ -16,7 +16,7 @@ spring:
     generate-ddl: false
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: none
     properties:
       hibernate.hibernate.format_sql: true
       hibernate.timezone.default_storage: NORMALIZE_UTC

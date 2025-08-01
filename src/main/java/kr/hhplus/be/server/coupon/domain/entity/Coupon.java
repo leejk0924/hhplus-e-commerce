@@ -10,8 +10,8 @@ import org.hibernate.annotations.Comment;
 
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-@Table(name = "coupon")
-@Entity(name = "coupon")
+@Table(name = "COUPON")
+@Entity(name = "COUPON")
 public class Coupon extends BaseTime {
     @Id
     @Column(name = "ID", nullable = false, unique = true)

@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "users_coupon")
-@Entity(name = "users_coupon")
+@Table(name = "USERS_COUPON")
+@Entity(name = "USERS_COUPON")
 public class UserCoupon extends BaseTime {
     @Id
     @Column(name = "ID", nullable = false, unique = true)

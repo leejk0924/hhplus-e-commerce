@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@Table(name = "products")
-@Entity(name = "products")
+@Table(name = "PRODUCTS")
+@Entity(name = "PRODUCTS")
 public class Product extends BaseTime {
     @Id
     @Column(name = "ID", nullable = false, unique = true)
