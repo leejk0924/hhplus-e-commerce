@@ -12,7 +12,9 @@ public enum CouponErrorCode implements ErrorCode {
     INVALID_USER(HttpStatus.NOT_FOUND, "유저 ID는 null을 사용할 수 없습니다."),
     INVALID_COUPON(HttpStatus.NOT_FOUND, "쿠폰 ID는 null을 사용할 수 없습니다."),
     DUPLICATE_USER_COUPON(HttpStatus.CONFLICT, "사용자는 해당 쿠폰을 이미 보유하고 있습니다."),
-    NOT_FOUND_COUPON(HttpStatus.NOT_FOUND, "쿠폰 ID가 존재하지 않습니다.");
+    NOT_FOUND_COUPON(HttpStatus.NOT_FOUND, "쿠폰 ID가 존재하지 않습니다."),
+    EXPIRED_COUPON(HttpStatus.NOT_FOUND, "해당 쿠폰은 사용기간이 만료되었습니다."),
+    ALREADY_REDEEMED(HttpStatus.NOT_FOUND,"해당 쿠폰은 이미 사용되었습니다.");
     private final HttpStatus httpStatus;
     private final String message;
 

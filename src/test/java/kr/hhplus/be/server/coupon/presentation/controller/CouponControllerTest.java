@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,8 +35,9 @@ class CouponControllerTest {
     @Test
     void 쿠폰_발행_성공_테스트() throws Exception {
         // Given
+
         Coupon coupon = Coupon.of(1L, "쿠폰명", "고정", 1000, 100);
-        UserCoupon issuedCoupon = UserCoupon.of(1L, coupon, "발급", null, LocalDateTime.now().plusDays(30));
+        UserCoupon issuedCoupon = UserCoupon.of(1L, coupon, "발급", null, LocalDateTime.now().plusDays(30).truncatedTo(ChronoUnit.SECONDS));
         CouponDto couponDto = CouponDto.from(coupon, issuedCoupon);
         given(couponFacade.issuedCoupon(1L, 1L)).willReturn(couponDto);
 

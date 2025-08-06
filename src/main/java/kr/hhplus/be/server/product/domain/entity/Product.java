@@ -62,4 +62,7 @@ public class Product extends BaseTime {
     public static Product of(String productName, int price, int stockQuantity) {
         return new Product(productName, price, stockQuantity);
     }
+    public void decreaseStockQuantity(Integer quantity) {
+        this.stockQuantity -= quantity;
+    }
 }

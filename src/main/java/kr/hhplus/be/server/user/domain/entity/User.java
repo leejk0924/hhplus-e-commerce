@@ -57,4 +57,10 @@ public class User extends BaseTime {
             throw new RestApiException(errorCode);
         }
     }
+    public void withdrawPoint(int amount) {
+        if (amount > this.pointBalance) {
+            throw new RestApiException(INSUFFICIENT_BALANCE);
+        }
+        this.pointBalance -= amount;
+    }
 }

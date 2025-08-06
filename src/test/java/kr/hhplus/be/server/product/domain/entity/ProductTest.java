@@ -4,11 +4,14 @@ import kr.hhplus.be.server.exception.RestApiException;
 import kr.hhplus.be.server.product.exception.ProductErrorCode;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ProductTest {
     @DisplayName("[Domain:단위테스트] : 보유 포인트가 유효하지 않은 경우")
@@ -36,5 +39,19 @@ class ProductTest {
                 Arguments.of("test", -1, 30, ProductErrorCode.INVALID_PRICE.getMessage()),
                 Arguments.of("test", 10_000_001, 30, ProductErrorCode.INVALID_PRICE.getMessage())
         );
+    }
+    @Test
+    void 상품_차감_성공_테스트() throws Exception {
+        // Given
+        int initQuantity = 200;
+        int decreaseStockQuantity = 100;
+        int expected = initQuantity - decreaseStockQuantity;
+        Product target = Product.of(1L, "테스트 상품1", 4000, initQuantity);
+
+        // When
+        target.decreaseStockQuantity(decreaseStockQuantity);
+
+        // Then
+        assertThat(target.getStockQuantity()).isEqualTo(expected);
     }
 }

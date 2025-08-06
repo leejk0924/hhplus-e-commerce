@@ -63,4 +63,20 @@ public class UserCoupon extends BaseTime {
     ) {
         return new UserCoupon(userId, couponId, couponStatus, redeemedAt, issuedAt);
     }
+    private boolean hasExpired() {
+        return expiredAt != null && expiredAt.isBefore(LocalDateTime.now());
+    }
+    private boolean isRedeemed() {
+        return redeemedAt != null && "사용됨".equals(couponStatus);
+    }
+
+    public boolean validateUsable() {
+        if (hasExpired()) {
+            throw new RestApiException(CouponErrorCode.EXPIRED_COUPON);
+        }
+        if (isRedeemed()) {
+            throw new RestApiException(CouponErrorCode.ALREADY_REDEEMED);
+        }
+        return true;
+    }
 }
