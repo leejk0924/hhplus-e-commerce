@@ -15,6 +15,6 @@ public class CouponRepositoryImpl implements CouponRepository {
 
     @Override
     public Coupon searchCoupon(Long couponId) {
-        return couponEntityRepository.findById(couponId).orElseThrow(() -> new RestApiException(CouponErrorCode.NOT_FOUND_COUPON));
+        return couponEntityRepository.findByIdForUpdate(couponId).orElseThrow(() -> new RestApiException(CouponErrorCode.NOT_FOUND_COUPON));
     }
 }
