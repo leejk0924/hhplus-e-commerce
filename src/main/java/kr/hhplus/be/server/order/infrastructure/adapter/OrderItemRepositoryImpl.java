@@ -20,6 +20,6 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
 
     @Override
     public List<OrderItem> findAllOrderItems(List<Long> orderItemIds) {
-        return orderItemEntityRepository.findAllById(orderItemIds);
+        return orderItemEntityRepository.findAllByIdInForUpdate(orderItemIds);
     }
 }

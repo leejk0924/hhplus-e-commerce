@@ -73,7 +73,7 @@ public class Order extends BaseTime {
         this.productTotalAmount = totalItemsPrice;
         this.paymentAmount = totalItemsPrice;
     }
-    public List<Long> toProductIds() {
+    public List<Long> toOrderItemIds() {
         return this.orderItems.stream().map(i -> {
             return i.getId();
         }).toList();

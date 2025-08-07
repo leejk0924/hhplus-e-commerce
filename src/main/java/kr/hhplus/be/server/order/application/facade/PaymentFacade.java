@@ -5,7 +5,6 @@ import kr.hhplus.be.server.order.application.dto.PayCommand;
 import kr.hhplus.be.server.order.application.service.OrderItemService;
 import kr.hhplus.be.server.order.application.service.OrderService;
 import kr.hhplus.be.server.order.domain.entity.Order;
-import kr.hhplus.be.server.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +17,7 @@ public class PaymentFacade {
     @Transactional
     public void payProcess(PayCommand payCommand) {
         Order order = orderService.searchOrder(payCommand.orderId());
-        orderItemService.deductProducts(order.toProductIds());
+        orderItemService.deductProducts(order.toOrderItemIds());
         if (payCommand.userCouponId() != null) {
             UserCoupon userCoupon = orderService.searchUserCoupon(payCommand.userCouponId(), payCommand.userId());
             userCoupon.validateUsable();
