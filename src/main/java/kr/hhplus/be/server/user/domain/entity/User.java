@@ -4,14 +4,13 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.common.entity.BaseTime;
 import kr.hhplus.be.server.exception.ErrorCode;
 import kr.hhplus.be.server.exception.RestApiException;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static kr.hhplus.be.server.user.exception.UserErrorCode.*;
 
 @Getter
-@AllArgsConstructor
+
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @Entity(name = "USERS")
 public class User extends BaseTime {
@@ -23,6 +22,15 @@ public class User extends BaseTime {
     private String username;
     @Column(name = "POINT_BALANCE", columnDefinition = "INT UNSIGNED")
     private Integer pointBalance;
+    @Version
+    @Column(name = "VERSION")
+    private Long version;
+
+    public User(Long id, String username, Integer pointBalance) {
+        this.id = id;
+        this.username = username;
+        this.pointBalance = pointBalance;
+    }
 
     public Integer hasBalanced() {
         return this.pointBalance == null ? 0 : this.pointBalance;
