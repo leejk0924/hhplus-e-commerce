@@ -18,7 +18,7 @@ public interface OrderEntityRepository extends JpaRepository<Order, Long> {
     Optional<UserCoupon> findUserCouponById(@Param("userCouponId") Long userCouponId, @Param("userId") Long userId);
 
     @Query(value = """
-    SELECT u.* FROM USERS u WHERE ID = :userId
-    """, nativeQuery = true)
+    SELECT u FROM USERS u WHERE u.id = :userId
+    """)
     Optional<User> findUserById(@Param("userId") Long userId);
 }

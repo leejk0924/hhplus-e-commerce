@@ -6,6 +6,7 @@ import kr.hhplus.be.server.order.domain.entity.OrderItem;
 import kr.hhplus.be.server.product.domain.entity.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,9 +17,10 @@ public class OrderItemService {
     public List<Product> searchProducts(List<Long> productIds) {
         return orderItemRepository.findProductsByIds(productIds);
     }
-    public boolean deductProducts(List<Long> productIds) {
+    @Transactional
+    public boolean deductProducts(List<Long> orderItemIds) {
         try {
-            List<OrderItem> orderItems = orderItemRepository.findAllOrderItems(productIds);
+            List<OrderItem> orderItems = orderItemRepository.findAllOrderItems(orderItemIds);
             orderItems.forEach(OrderItem::subtractProductStockQuantity);
             return true;
         }catch (RestApiException e) {

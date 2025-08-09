@@ -10,6 +10,7 @@ import kr.hhplus.be.server.product.domain.entity.Product;
 import kr.hhplus.be.server.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -49,6 +50,7 @@ public class OrderService {
         return orderRepository.findUserById(userId);
     }
 
+    @Transactional
     public boolean withdrawPayment(PayCommand payCommand, Order order) {
         User user = searchUser(payCommand.userId());
         user.withdrawPoint(order.getPaymentAmount());
