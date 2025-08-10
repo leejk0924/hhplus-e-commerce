@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.user.presentation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.hhplus.be.server.AbstractIntegrationTest;
 import kr.hhplus.be.server.user.domain.entity.User;
 import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
 import kr.hhplus.be.server.user.presentation.dto.UserRequest;
@@ -26,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-public class UserPointControllerTest {
+public class UserPointControllerTest extends AbstractIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @MockitoBean

@@ -18,6 +18,9 @@ services:
           cp /etc/sentinel-base.conf /data/sentinel.conf
         fi
         exec redis-sentinel /data/sentinel.conf
+    environment:
+      - SENTINEL_ANNOUNCE_IP=sentinel1
+      - SENTINEL_ANNOUNCE_PORT=26379
     healthcheck:
       test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
       interval: 5s
@@ -43,7 +46,9 @@ services:
           cp /etc/sentinel-base.conf /data/sentinel.conf
         fi
         exec redis-sentinel /data/sentinel.conf
-
+    environment:
+      - SENTINEL_ANNOUNCE_IP=sentinel2
+      - SENTINEL_ANNOUNCE_PORT=26379
     healthcheck:
       test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
       interval: 5s
@@ -69,6 +74,9 @@ services:
           cp /etc/sentinel-base.conf /data/sentinel.conf
         fi
         exec redis-sentinel /data/sentinel.conf
+    environment:
+      - SENTINEL_ANNOUNCE_IP=sentinel1
+      - SENTINEL_ANNOUNCE_PORT=26379
     healthcheck:
       test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
       interval: 5s

@@ -42,6 +42,8 @@ services:
       --appendonly no
       --protected-mode no
       --replicaof redis-master 6379
+      --replica-announce-ip redis-slave1
+      --replica-announce-port 6379
     volumes:
       - ../../data/redis/slave1:/data
     healthcheck:
@@ -69,6 +71,8 @@ services:
       --appendonly no
       --protected-mode no
       --replicaof redis-master 6379
+      --replica-announce-ip redis-slave2
+      --replica-announce-port 6379
     volumes:
       - ../../data/redis/slave2:/data
     healthcheck:

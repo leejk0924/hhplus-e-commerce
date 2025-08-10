@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.order.application.service;
 
+import kr.hhplus.be.server.AbstractIntegrationTest;
 import kr.hhplus.be.server.order.application.repository.OrderItemRepository;
 import kr.hhplus.be.server.order.domain.entity.Order;
 import kr.hhplus.be.server.order.domain.entity.OrderItem;
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class OrderItemServiceConcurrencyTest {
+public class OrderItemServiceConcurrencyTest extends AbstractIntegrationTest {
     @Autowired
     private OrderItemService sut;
     @Autowired

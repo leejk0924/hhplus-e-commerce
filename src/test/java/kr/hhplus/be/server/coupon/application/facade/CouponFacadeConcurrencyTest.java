@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.coupon.application.facade;
 
+import kr.hhplus.be.server.AbstractIntegrationTest;
 import kr.hhplus.be.server.coupon.domain.entity.Coupon;
 import kr.hhplus.be.server.coupon.infrastructure.persistence.jpa.CouponEntityRepository;
 import kr.hhplus.be.server.user.domain.entity.User;
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-class CouponFacadeConcurrencyTest {
+class CouponFacadeConcurrencyTest extends AbstractIntegrationTest {
     @Autowired
     private CouponFacade sut;
     @Autowired

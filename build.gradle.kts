@@ -60,3 +60,35 @@ tasks.withType<Test> {
 	useJUnitPlatform()
 	systemProperty("user.timezone", "UTC")
 }
+
+tasks.test {
+	outputs.upToDateWhen { false }
+	useJUnitPlatform {}
+}
+
+tasks.register<Test>("unitTest") {
+	group = "verification"
+	description = "Runs only unit tests"
+
+	val testSourceSet = sourceSets.named("test").get()
+	testClassesDirs = testSourceSet.output.classesDirs
+	classpath = testSourceSet.runtimeClasspath
+
+	useJUnitPlatform { excludeTags("integrationTest") }
+
+	outputs.upToDateWhen { false }
+}
+
+tasks.register<Test>("integrationTest") {
+	group = "verification"
+	description = "Runs only integration tests"
+
+	val testSourceSet = sourceSets.named("test").get()
+	testClassesDirs = testSourceSet.output.classesDirs
+	classpath = testSourceSet.runtimeClasspath
+
+	useJUnitPlatform { includeTags("integrationTest") }
+
+	outputs.upToDateWhen { false }
+	shouldRunAfter("unitTest")
+}

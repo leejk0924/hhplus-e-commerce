@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.user.application.service;
 
+import kr.hhplus.be.server.AbstractIntegrationTest;
 import kr.hhplus.be.server.user.domain.entity.User;
 import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class UserPointServiceConcurrencyTest {
+public class UserPointServiceConcurrencyTest extends AbstractIntegrationTest {
     @Autowired
     private UserPointService sut;
     @Autowired

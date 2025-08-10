@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.product.application.service;
 
 import jakarta.transaction.Transactional;
+import kr.hhplus.be.server.AbstractIntegrationTest;
 import kr.hhplus.be.server.product.application.dto.ProductDto;
 import kr.hhplus.be.server.product.domain.entity.Product;
 import kr.hhplus.be.server.product.infrastructure.persistence.jpa.ProductEntityRepository;
@@ -9,13 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -27,10 +22,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
-@ActiveProfiles("test")
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ProductServiceIntegrationTest {
+public class ProductServiceIntegrationTest extends AbstractIntegrationTest {
     @MockitoBean
     private ProductEntityRepository productEntityRepository;
     @Autowired
