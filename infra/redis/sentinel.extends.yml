@@ -1,0 +1,77 @@
+version: '3.9'
+services:
+  sentinel1:
+    image: redis:latest
+    container_name: sentinel1
+    depends_on:
+      redis-master: { condition: service_healthy }
+      redis-slave1: { condition: service_healthy }
+      redis-slave2: { condition: service_healthy }
+    volumes:
+      - ./sentinel-base.conf:/etc/sentinel-base.conf:ro
+      - ${PWD}/data/sentinel/sentinel1:/data
+    command:
+      - sh
+      - -lc
+      - |
+        if [ ! -f /data/sentinel.conf ]; then
+          cp /etc/sentinel-base.conf /data/sentinel.conf
+        fi
+        exec redis-sentinel /data/sentinel.conf
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  sentinel2:
+    image: redis:latest
+    container_name: sentinel2
+    depends_on:
+      redis-master: { condition: service_healthy }
+      redis-slave1: { condition: service_healthy }
+      redis-slave2: { condition: service_healthy }
+    volumes:
+      - ./sentinel-base.conf:/etc/sentinel-base.conf:ro
+      - ${PWD}/data/sentinel/sentinel2:/data
+    command:
+      - sh
+      - -lc
+      - |
+        if [ ! -f /data/sentinel.conf ]; then
+          cp /etc/sentinel-base.conf /data/sentinel.conf
+        fi
+        exec redis-sentinel /data/sentinel.conf
+
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+
+  sentinel3:
+    image: redis:latest
+    container_name: sentinel3
+    depends_on:
+      redis-master: { condition: service_healthy }
+      redis-slave1: { condition: service_healthy }
+      redis-slave2: { condition: service_healthy }
+    volumes:
+      - ./sentinel-base.conf:/etc/sentinel-base.conf:ro
+      - ${PWD}/data/sentinel/sentinel3:/data
+    command:
+      - sh
+      - -lc
+      - |
+        if [ ! -f /data/sentinel.conf ]; then
+          cp /etc/sentinel-base.conf /data/sentinel.conf
+        fi
+        exec redis-sentinel /data/sentinel.conf
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
