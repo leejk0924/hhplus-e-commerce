@@ -1,13 +1,12 @@
 package kr.hhplus.be.server.user.presentation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.hhplus.be.server.AbstractIntegrationTest;
+import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
 import kr.hhplus.be.server.user.domain.entity.User;
 import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
 import kr.hhplus.be.server.user.presentation.dto.UserRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;

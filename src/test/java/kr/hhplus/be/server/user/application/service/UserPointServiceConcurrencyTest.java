@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.user.application.service;
 
-import kr.hhplus.be.server.AbstractIntegrationTest;
+import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
 import kr.hhplus.be.server.user.domain.entity.User;
 import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
 import org.junit.jupiter.api.BeforeEach;

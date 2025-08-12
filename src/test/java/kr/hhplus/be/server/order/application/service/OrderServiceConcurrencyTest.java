@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.order.application.service;
 
-import kr.hhplus.be.server.AbstractIntegrationTest;
+import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
 import kr.hhplus.be.server.order.application.dto.PayCommand;
 import kr.hhplus.be.server.order.domain.entity.Order;
 import kr.hhplus.be.server.order.domain.entity.OrderItem;

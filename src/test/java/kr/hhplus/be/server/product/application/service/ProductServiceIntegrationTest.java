@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.product.application.service;
 
 import jakarta.transaction.Transactional;
-import kr.hhplus.be.server.AbstractIntegrationTest;
+import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
 import kr.hhplus.be.server.product.application.dto.ProductDto;
 import kr.hhplus.be.server.product.domain.entity.Product;
 import kr.hhplus.be.server.product.infrastructure.persistence.jpa.ProductEntityRepository;

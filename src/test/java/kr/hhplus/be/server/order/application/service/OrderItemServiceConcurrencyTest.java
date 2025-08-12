@@ -1,13 +1,12 @@
 package kr.hhplus.be.server.order.application.service;
 
-import kr.hhplus.be.server.AbstractIntegrationTest;
-import kr.hhplus.be.server.order.application.repository.OrderItemRepository;
 import kr.hhplus.be.server.order.domain.entity.Order;
 import kr.hhplus.be.server.order.domain.entity.OrderItem;
 import kr.hhplus.be.server.order.infrastructure.persistence.jpa.OrderEntityRepository;
 import kr.hhplus.be.server.order.infrastructure.persistence.jpa.OrderItemEntityRepository;
 import kr.hhplus.be.server.product.domain.entity.Product;
 import kr.hhplus.be.server.product.infrastructure.persistence.jpa.ProductEntityRepository;
+import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
 import kr.hhplus.be.server.user.domain.entity.User;
 import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
 import org.junit.jupiter.api.BeforeEach;

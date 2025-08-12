@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.coupon.application.facade;
 
-import kr.hhplus.be.server.AbstractIntegrationTest;
+import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
 import kr.hhplus.be.server.coupon.domain.entity.Coupon;
 import kr.hhplus.be.server.coupon.infrastructure.persistence.jpa.CouponEntityRepository;
 import kr.hhplus.be.server.user.domain.entity.User;

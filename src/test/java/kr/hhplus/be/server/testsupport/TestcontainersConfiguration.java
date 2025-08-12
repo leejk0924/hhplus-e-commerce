@@ -1,4 +1,4 @@
-package kr.hhplus.be.server;
+package kr.hhplus.be.server.testsupport;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.testcontainers.containers.GenericContainer;
