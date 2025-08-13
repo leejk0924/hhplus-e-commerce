@@ -7,26 +7,35 @@ services:
       redis-master: { condition: service_healthy }
       redis-slave1: { condition: service_healthy }
       redis-slave2: { condition: service_healthy }
-    volumes:
-      - ./sentinel-base.conf:/etc/sentinel-base.conf:ro
-      - ${PWD}/data/sentinel/sentinel1:/data
     command:
       - sh
       - -lc
       - |
-        if [ ! -f /data/sentinel.conf ]; then
-          cp /etc/sentinel-base.conf /data/sentinel.conf
-        fi
-        exec redis-sentinel /data/sentinel.conf
-    environment:
-      - SENTINEL_ANNOUNCE_IP=sentinel1
-      - SENTINEL_ANNOUNCE_PORT=26379
+        : > /data/sentinel.conf
+        exec redis-server /data/sentinel.conf --sentinel \
+          --port 26379 \
+          --dir /data \
+          --daemonize no \
+          --bind 0.0.0.0 \
+          --protected-mode no \
+          --sentinel resolve-hostnames yes \
+          --sentinel announce-hostnames yes \
+          --sentinel announce-ip 127.0.0.1 \
+          --sentinel announce-port 26379 \
+          --sentinel monitor server-master 127.0.0.1 6379 2 \
+          --sentinel down-after-milliseconds server-master 5000 \
+          --sentinel failover-timeout server-master 60000 \
+          --sentinel parallel-syncs server-master 1
+    ports:
+      - "26379:26379"
+    volumes:
+      - ${PWD}/data/sentinel/sentinel1:/data
+    restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
+      test: ["CMD", "redis-cli", "-p", "26379", "PING"]
       interval: 5s
       timeout: 3s
       retries: 30
-    restart: unless-stopped
 
   sentinel2:
     image: redis:latest
@@ -35,26 +44,35 @@ services:
       redis-master: { condition: service_healthy }
       redis-slave1: { condition: service_healthy }
       redis-slave2: { condition: service_healthy }
-    volumes:
-      - ./sentinel-base.conf:/etc/sentinel-base.conf:ro
-      - ${PWD}/data/sentinel/sentinel2:/data
     command:
       - sh
       - -lc
       - |
-        if [ ! -f /data/sentinel.conf ]; then
-          cp /etc/sentinel-base.conf /data/sentinel.conf
-        fi
-        exec redis-sentinel /data/sentinel.conf
-    environment:
-      - SENTINEL_ANNOUNCE_IP=sentinel2
-      - SENTINEL_ANNOUNCE_PORT=26379
+        : > /data/sentinel.conf
+        exec redis-server /data/sentinel.conf --sentinel \
+          --port 26379 \
+          --dir /data \
+          --bind 0.0.0.0 \
+          --daemonize no \
+          --protected-mode no \
+          --sentinel resolve-hostnames yes \
+          --sentinel announce-hostnames yes \
+          --sentinel announce-ip 127.0.0.1 \
+          --sentinel announce-port 26380 \
+          --sentinel monitor server-master 127.0.0.1 6379 2 \
+          --sentinel down-after-milliseconds server-master 5000 \
+          --sentinel failover-timeout server-master 60000 \
+          --sentinel parallel-syncs server-master 1
+    ports:
+      - "26380:26379"
+    volumes:
+      - ${PWD}/data/sentinel/sentinel2:/data
+    restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
+      test: ["CMD", "redis-cli", "-p", "26379", "PING"]
       interval: 5s
       timeout: 3s
       retries: 30
-    restart: unless-stopped
 
   sentinel3:
     image: redis:latest
@@ -63,23 +81,32 @@ services:
       redis-master: { condition: service_healthy }
       redis-slave1: { condition: service_healthy }
       redis-slave2: { condition: service_healthy }
-    volumes:
-      - ./sentinel-base.conf:/etc/sentinel-base.conf:ro
-      - ${PWD}/data/sentinel/sentinel3:/data
     command:
       - sh
       - -lc
       - |
-        if [ ! -f /data/sentinel.conf ]; then
-          cp /etc/sentinel-base.conf /data/sentinel.conf
-        fi
-        exec redis-sentinel /data/sentinel.conf
-    environment:
-      - SENTINEL_ANNOUNCE_IP=sentinel1
-      - SENTINEL_ANNOUNCE_PORT=26379
+        : > /data/sentinel.conf
+        exec redis-server /data/sentinel.conf --sentinel \
+          --port 26379 \
+          --dir /data \
+          --bind 0.0.0.0 \
+          --daemonize no \
+          --protected-mode no \
+          --sentinel resolve-hostnames yes \
+          --sentinel announce-hostnames yes \
+          --sentinel announce-ip 127.0.0.1 \
+          --sentinel announce-port 26381 \
+          --sentinel monitor server-master 127.0.0.1 6379 2 \
+          --sentinel down-after-milliseconds server-master 5000 \
+          --sentinel failover-timeout server-master 60000 \
+          --sentinel parallel-syncs server-master 1
+    ports:
+      - "26381:26379"
+    volumes:
+      - ${PWD}/data/sentinel/sentinel3:/data
+    restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "redis-cli", "-p", "26379", "PING" ]
+      test: ["CMD", "redis-cli", "-p", "26379", "PING"]
       interval: 5s
       timeout: 3s
       retries: 30
-    restart: unless-stopped
