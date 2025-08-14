@@ -8,4 +8,5 @@ import java.util.List;
 public interface OrderItemRepository {
     List<Product> findProductsByIds(List<Long> orderItemIds);
     List<OrderItem> findAllOrderItems(List<Long> orderItemIds);
+    List<Long> findProductIdsByOrderItemIds(List<Long> orderItemIds);
 }

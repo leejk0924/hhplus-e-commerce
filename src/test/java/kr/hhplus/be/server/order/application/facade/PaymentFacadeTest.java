@@ -1,5 +1,6 @@
-package kr.hhplus.be.server.order.application.service;
+package kr.hhplus.be.server.order.application.facade;
 
+import kr.hhplus.be.server.order.application.dto.PayCommand;
 import kr.hhplus.be.server.order.domain.entity.Order;
 import kr.hhplus.be.server.order.domain.entity.OrderItem;
 import kr.hhplus.be.server.order.infrastructure.persistence.jpa.OrderEntityRepository;
@@ -13,20 +14,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.PessimisticLockingFailureException;
 
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class OrderItemServiceConcurrencyTest extends AbstractIntegrationTest {
+class PaymentFacadeTest extends AbstractIntegrationTest {
     @Autowired
-    private OrderItemService sut;
+    private PaymentFacade sut;
     @Autowired
     private ProductEntityRepository productEntityRepository;
     @Autowired
@@ -35,31 +35,36 @@ public class OrderItemServiceConcurrencyTest extends AbstractIntegrationTest {
     private OrderItemEntityRepository orderItemEntityRepository;
     @Autowired
     private UsersEntityRepository usersEntityRepository;
-
+    private List<User> users;
+    private List<Order> orders;
+    private List<OrderItem> orderItems;
     private Product product;
+    int initStockQuantity = 100;
 
     @BeforeEach
     void setUp() {
-        User user = User.of(null, "테스트 계정", 10000);
-        usersEntityRepository.save(user);
+        users = IntStream.range(0, 50).mapToObj(
+                i -> usersEntityRepository.save(User.of(null, "테스트 계정" + i, 100_000))
+        ).toList();
 
-        Order order = Order.of(user.getId(), "주문상태");
-        orderEntityRepository.save(order);
+        orders = IntStream.range(0, 50).mapToObj(
+                i -> orderEntityRepository.save(Order.of(users.get(i).getId(), "주문상태"))
+        ).toList();
 
-        product = Product.of("테스트 상품1", 1000, 10);
+        product = Product.of("테스트 상품1", 1000, initStockQuantity);
         productEntityRepository.save(product);
 
-        OrderItem orderItem = OrderItem.of(order, product, 1, 2500);
-        orderItemEntityRepository.save(orderItem);
+        orderItems = orders.stream().map(
+                o -> orderItemEntityRepository.save(OrderItem.of(o, product, 2, 2500))
+        ).toList();
     }
 
-    @DisplayName("[통합테스트:동시성이슈] : 상품의 재고 차감 동시성 테스트")
+    @DisplayName("[통합테스트:동시성이슈] : 결제 시, 상품의 재고 동시성 이슈 테스트")
     @Test
-    void 상품_재고_차감_테스트() throws Exception {
+    void 결제_동시성_성공_테스트() throws Exception {
         // Given
-        int threadCount = product.getStockQuantity();
-        List<Long> productIds = List.of(product.getId());
-
+        int threadCount = users.size();
+        int expectedStockQuantity = initStockQuantity - orderItems.stream().mapToInt(OrderItem::getQuantity).sum();
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount);
         CyclicBarrier barrier = new CyclicBarrier(threadCount);
@@ -68,10 +73,13 @@ public class OrderItemServiceConcurrencyTest extends AbstractIntegrationTest {
 
         // When
         for (int i = 0; i < threadCount; i++) {
+            final Long userId = users.get(i).getId();
+            final long orderId = orders.get(i).getId();
             executorService.execute(() -> {
                 try {
+                    PayCommand payCommand = new PayCommand(userId, orderId, null);
+                    sut.payProcess(payCommand);
                     barrier.await();
-                    sut.deductProducts(productIds);
                     successCount.incrementAndGet();
                 } catch (PessimisticLockingFailureException e) {
                     failCount.incrementAndGet();
@@ -86,11 +94,16 @@ public class OrderItemServiceConcurrencyTest extends AbstractIntegrationTest {
 
         // Then
         Product target = productEntityRepository.findById(product.getId()).orElseThrow();
-
         assertAll(
-                () -> assertThat(successCount.get()).isEqualTo(threadCount),
-                () -> assertThat(failCount.get()).isEqualTo(0),
-                () -> assertThat(target.getStockQuantity()).isEqualTo(0)
+                () -> assertThat(successCount.get())
+                        .as("결제 성공 후 상품 차감 성공 검증")
+                        .isEqualTo(threadCount),
+                () -> assertThat(failCount.get())
+                        .as("상품 차감 실패 검증")
+                        .isZero(),
+                () -> assertThat(target.getStockQuantity())
+                        .as("재고 차감")
+                        .isEqualTo(expectedStockQuantity)
         );
     }
 }

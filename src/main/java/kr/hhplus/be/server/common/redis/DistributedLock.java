@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.common.redis;
 
+import kr.hhplus.be.server.common.redis.key.DefaultLockKeyGenerator;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -9,7 +11,8 @@ import java.util.concurrent.TimeUnit;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DistributedLock {
-    String key();
+    String[] key() default {};
+    Class<? extends LockKeyGenerator> keyGenerator() default DefaultLockKeyGenerator.class;
     TimeUnit timeUnit() default TimeUnit.SECONDS;
     long waitTime()default 5L;
     long leaseTime() default 3L;

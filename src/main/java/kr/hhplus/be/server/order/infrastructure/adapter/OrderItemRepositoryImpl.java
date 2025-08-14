@@ -22,4 +22,9 @@ public class OrderItemRepositoryImpl implements OrderItemRepository {
     public List<OrderItem> findAllOrderItems(List<Long> orderItemIds) {
         return orderItemEntityRepository.findAllByIdInForUpdate(orderItemIds);
     }
+
+    @Override
+    public List<Long> findProductIdsByOrderItemIds(List<Long> orderItemIds) {
+        return orderItemEntityRepository.findProductIdsByOrderItemIds(orderItemIds);
+    }
 }
