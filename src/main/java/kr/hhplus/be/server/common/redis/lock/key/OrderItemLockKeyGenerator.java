@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.common.redis.key;
+package kr.hhplus.be.server.common.redis.lock.key;
 
-import kr.hhplus.be.server.common.redis.LockKeyGenerator;
+import kr.hhplus.be.server.common.redis.lock.LockKeyGenerator;
 import kr.hhplus.be.server.order.application.dto.PayCommand;
 import kr.hhplus.be.server.order.application.service.OrderItemService;
 import kr.hhplus.be.server.order.application.service.OrderService;

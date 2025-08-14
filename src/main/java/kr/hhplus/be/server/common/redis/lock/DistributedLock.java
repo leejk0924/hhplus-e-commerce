@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.common.redis;
+package kr.hhplus.be.server.common.redis.lock;
 
-import kr.hhplus.be.server.common.redis.key.DefaultLockKeyGenerator;
+import kr.hhplus.be.server.common.redis.lock.key.DefaultLockKeyGenerator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

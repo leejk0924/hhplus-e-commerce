@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.common.redis;
+package kr.hhplus.be.server.common.redis.lock;
 
 import org.aspectj.lang.reflect.MethodSignature;
 

@@ -1,6 +1,6 @@
-package kr.hhplus.be.server.common.redis;
+package kr.hhplus.be.server.common.redis.lock;
 
-import kr.hhplus.be.server.common.redis.key.DefaultLockKeyGenerator;
+import kr.hhplus.be.server.common.redis.lock.key.DefaultLockKeyGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

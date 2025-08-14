@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.coupon.application.facade;
 
-import kr.hhplus.be.server.common.redis.DistributedLock;
+import kr.hhplus.be.server.common.redis.lock.DistributedLock;
 import kr.hhplus.be.server.coupon.application.dto.CouponDto;
 import kr.hhplus.be.server.coupon.application.service.CouponService;
 import kr.hhplus.be.server.coupon.application.service.UserCouponService;

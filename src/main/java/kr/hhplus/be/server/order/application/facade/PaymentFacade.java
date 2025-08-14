@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.order.application.facade;
 
-import kr.hhplus.be.server.common.redis.DistributedLock;
-import kr.hhplus.be.server.common.redis.key.OrderItemLockKeyGenerator;
+import kr.hhplus.be.server.common.redis.lock.DistributedLock;
+import kr.hhplus.be.server.common.redis.lock.key.OrderItemLockKeyGenerator;
 import kr.hhplus.be.server.coupon.domain.entity.UserCoupon;
 import kr.hhplus.be.server.order.application.dto.PayCommand;
 import kr.hhplus.be.server.order.application.service.OrderItemService;
