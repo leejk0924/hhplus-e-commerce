@@ -10,7 +10,7 @@ public class CacheNames  {
     public static final String POP_PRODUCTS = "PRODUCT::POP";
     private static final long POP_PRODUCTS_EXPIRATION = 1L;
     public static final String PRODUCT_DETAIL = "PRODUCT::DETAIL";
-    private static final long PRODUCT_DETAILS_EXPIRATION = 60L;
+    private static final long PRODUCT_DETAILS_EXPIRATION = 2L;
 
     public static List<CacheName> getAll() {
         return List.of(
