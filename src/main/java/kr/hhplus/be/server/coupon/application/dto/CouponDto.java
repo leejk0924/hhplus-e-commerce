@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.coupon.application.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import kr.hhplus.be.server.coupon.domain.entity.Coupon;
 import kr.hhplus.be.server.coupon.domain.entity.UserCoupon;
 
@@ -10,6 +11,7 @@ public record CouponDto(
         String couponName,
         String discountType,
         int discountRate,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime expiredAt
 ) {
     public static CouponDto from (Coupon coupon, UserCoupon userCoupon) {
