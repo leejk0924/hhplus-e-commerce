@@ -13,10 +13,10 @@ import org.testcontainers.containers.MySQLContainer;
 
 @ActiveProfiles("test")
 @Tag("integrationTest")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Sql(value = "classpath:sql/truncate-all.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import({MySQLTestContainerConfig.class, RedisTestContainerConfig.class})
+@Import({MySQLTestContainerConfig.class, RedisTestContainerConfig.class, TestCacheConfiguration.class})
 public class AbstractIntegrationTest {
     static GenericContainer<?> redisContainer = RedisTestContainerConfig.getContainer();
     static MySQLContainer<?> mysqlContainer = MySQLTestContainerConfig.getContainer();
