@@ -1,0 +1,8 @@
+### 인기상품 조회
+GET {{host}}/api/products/popular
+Accept: application/json
+
+### 상품 상세 조회
+@productId = 1
+GET {{host}}/api/products/{{productId}}
+Accept: application/json

@@ -1,0 +1,19 @@
+singleServerConfig: null
+sentinelServersConfig:
+  masterName: server-master
+  sentinelAddresses:
+    - "redis://127.0.0.1:26379"
+    - "redis://127.0.0.1:26380"
+    - "redis://127.0.0.1:26381"
+  checkSentinelsList: false
+  database: 10
+  timeout: 3000
+  clientName: "hhplus-locks"
+  natMapper:
+    class: org.redisson.api.HostNatMapper
+    hostsMap:
+      redis-master: "127.0.0.1"
+      redis-slave1: "127.0.0.1"
+      redis-slave2: "127.0.0.1"
+threads: 0
+nettyThreads: 0

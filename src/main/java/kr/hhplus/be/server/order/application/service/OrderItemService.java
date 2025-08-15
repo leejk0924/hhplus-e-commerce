@@ -27,4 +27,7 @@ public class OrderItemService {
             throw e;
         }
     }
+    public List<Long> searchProductIdsByOrderItemIds(List<Long> orderItemIds) {
+        return orderItemRepository.findProductIdsByOrderItemIds(orderItemIds);
+    }
 }

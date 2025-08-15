@@ -1,17 +1,57 @@
-version: '3'
-services:
-  mysql:
-    image: mysql:8.0
-    ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=root
-      - MYSQL_USER=application
-      - MYSQL_PASSWORD=application
-      - MYSQL_DATABASE=hhplus
-    volumes:
-      - ./data/mysql/:/var/lib/mysql
+name: server
 
 networks:
-  default:
+  db-net:
+    name: db-net
     driver: bridge
+  cache-net:
+    name: cache-net
+    driver: bridge
+
+services:
+  mysql:
+    extends:
+      file: ./infra/mysql/compose.yml
+      service: mysql
+    networks: [db-net]
+    ports:
+      - "3306:3306"
+  redis-master:
+    extends:
+      file: ./infra/redis/redis.extends.yml
+      service: redis-master
+    networks:
+      cache-net:
+        aliases: [ redis-master ]
+    ports: [ "6379:6379" ]
+
+  redis-slave1:
+    extends:
+      file: ./infra/redis/redis.extends.yml
+      service: redis-slave1
+    networks: [ cache-net ]
+    ports: [ "6380:6379" ]
+  redis-slave2:
+    extends:
+      file: ./infra/redis/redis.extends.yml
+      service: redis-slave2
+    networks: [ cache-net ]
+    ports: [ "6381:6379" ]
+  sentinel1:
+    extends:
+      file: ./infra/redis/sentinel.extends.yml
+      service: sentinel1
+    networks: [ cache-net ]
+    ports: [ "26379:26379" ]
+  sentinel2:
+    extends:
+      file: ./infra/redis/sentinel.extends.yml
+      service: sentinel2
+    networks: [ cache-net ]
+    ports: [ "26380:26379" ]
+  sentinel3:
+    extends:
+      file: ./infra/redis/sentinel.extends.yml
+      service: sentinel3
+    networks: [ cache-net ]
+    ports: [ "26381:26379" ]

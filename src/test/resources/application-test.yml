@@ -1,0 +1,29 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  cache:
+    type: REDIS
+  data:
+    redis:
+      host: 127.0.0.1
+      port: ${REDIS_PORT:6378}
+    redis.repositories:
+      enabled: false
+  redis:
+      config: |
+        singleServerConfig:
+          address: "redis://127.0.0.1:${REDIS_PORT:6378}"
+          database: 0
+          timeout: 3000
+          connectionMinimumIdleSize: 2
+          connectionPoolSize: 8
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: none
+logging:
+  level:
+    org.springframework.data.redis: INFO
+    org.redisson: INFO

@@ -1,10 +1,13 @@
 package kr.hhplus.be.server.product.application.service;
 
+import kr.hhplus.be.server.common.redis.cache.CacheNames;
 import kr.hhplus.be.server.product.application.dto.ProductDto;
 import kr.hhplus.be.server.product.application.repository.ProductRepository;
 import kr.hhplus.be.server.product.domain.entity.Product;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,6 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+
+    @Cacheable(value = CacheNames.PRODUCT_DETAIL, key = "'PRODUCT_ID' + #productId")
+    @Transactional(readOnly = true)
     public ProductDto loadProduct(Long productId) {
         Product product = productRepository.loadProduct(productId);
         return ProductDto.toDto(product);
@@ -20,6 +26,9 @@ public class ProductService {
         List<Product> products = productRepository.loadAllProducts();
         return products.stream().map(ProductDto::toDto).toList();
     }
+
+    @Cacheable(value = CacheNames.POP_PRODUCTS, key = "'POP_PRODUCT_LIST'")
+    @Transactional(readOnly = true)
     public List<ProductDto> loadPopularProduct() {
         List<Product> products = productRepository.loadPopularProducts();
         return products.stream().map(ProductDto::toDto).toList();

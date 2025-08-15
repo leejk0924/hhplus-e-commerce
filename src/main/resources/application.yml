@@ -21,6 +21,33 @@ spring:
       hibernate.hibernate.format_sql: true
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
+  cache:
+    type: redis
+    redis:
+      master: server-master
+      sentinels:
+        - host: 127.0.0.1
+          port: 26379
+        - host: 127.0.0.1
+          port: 26380
+        - host: 127.0.0.1
+          port: 26381
+      database: 11
+  data:
+    redis:
+      sentinel:
+        master: server-master
+        nodes:
+          - localhost:26379
+          - localhost:26380
+          - localhost:26381
+      connect-timeout: 3s
+logging:
+  level:
+    org.redisson: info
+    org.redisson.client.protocol: info
+    org.springframework.cache: DEBUG
+    org.springframework.data.redis: DEBUG
 
 ---
 spring.config.activate.on-profile: local, test

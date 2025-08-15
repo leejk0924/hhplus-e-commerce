@@ -32,8 +32,11 @@ dependencyManagement {
 dependencies {
     // Spring
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.redisson:redisson-spring-boot-starter:3.27.+")
+	implementation("org.springframework.boot:spring-boot-configuration-processor")
 
     // DB
 	runtimeOnly("com.mysql:mysql-connector-j")
@@ -59,4 +62,36 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	systemProperty("user.timezone", "UTC")
+}
+
+tasks.test {
+	outputs.upToDateWhen { false }
+	useJUnitPlatform {}
+}
+
+tasks.register<Test>("unitTest") {
+	group = "verification"
+	description = "Runs only unit tests"
+
+	val testSourceSet = sourceSets.named("test").get()
+	testClassesDirs = testSourceSet.output.classesDirs
+	classpath = testSourceSet.runtimeClasspath
+
+	useJUnitPlatform { excludeTags("integrationTest") }
+
+	outputs.upToDateWhen { false }
+}
+
+tasks.register<Test>("integrationTest") {
+	group = "verification"
+	description = "Runs only integration tests"
+
+	val testSourceSet = sourceSets.named("test").get()
+	testClassesDirs = testSourceSet.output.classesDirs
+	classpath = testSourceSet.runtimeClasspath
+
+	useJUnitPlatform { includeTags("integrationTest") }
+
+	outputs.upToDateWhen { false }
+	shouldRunAfter("unitTest")
 }

@@ -1,0 +1,85 @@
+version: '3.9'
+services:
+  redis-master:
+    image: redis:latest
+    container_name: redis-master
+    networks:
+      cache-net:
+        aliases:
+          - redis-master
+    command: >
+      redis-server
+      --port 6379
+      --bind 0.0.0.0
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+      --appendonly no
+      --protected-mode no
+    volumes:
+      - ../../data/redis/master:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-p", "6379", "ping" ]
+      interval: 3s
+      timeout: 2s
+      retries: 30
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+  redis-slave1:
+    image: redis:latest
+    container_name: redis-slave1
+    networks:
+      - cache-net
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    command: >
+      redis-server
+      --port 6379
+      --bind 0.0.0.0
+      --maxmemory 2gb
+      --maxmemory-policy allkeys-lru
+      --appendonly no
+      --protected-mode no
+      --replicaof redis-master 6379
+      --replica-announce-ip redis-slave1
+      --replica-announce-port 6379
+    volumes:
+      - ../../data/redis/slave1:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-p", "6379", "PING"]
+      interval: 3s
+      timeout: 2s
+      retries: 30
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+  redis-slave2:
+    image: redis:latest
+    container_name: redis-slave2
+    networks:
+      - cache-net
+    depends_on:
+      redis-master:
+        condition: service_healthy
+    command: >
+      redis-server
+      --port 6379
+      --bind 0.0.0.0
+      --maxmemory 4gb
+      --maxmemory-policy allkeys-lru
+      --appendonly no
+      --protected-mode no
+      --replicaof redis-master 6379
+      --replica-announce-ip redis-slave2
+      --replica-announce-port 6379
+    volumes:
+      - ../../data/redis/slave2:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "-p", "6379", "PING" ]
+      interval: 3s
+      timeout: 2s
+      retries: 30
+    restart: unless-stopped
+    ports:
+      - "6381:6379"

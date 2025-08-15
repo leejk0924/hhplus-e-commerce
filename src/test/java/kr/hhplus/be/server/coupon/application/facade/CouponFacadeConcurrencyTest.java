@@ -2,13 +2,13 @@ package kr.hhplus.be.server.coupon.application.facade;
 
 import kr.hhplus.be.server.coupon.domain.entity.Coupon;
 import kr.hhplus.be.server.coupon.infrastructure.persistence.jpa.CouponEntityRepository;
+import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
 import kr.hhplus.be.server.user.domain.entity.User;
 import kr.hhplus.be.server.user.infrastructure.persistence.jpa.UsersEntityRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.PessimisticLockingFailureException;
 
 import java.util.List;
@@ -19,8 +19,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-class CouponFacadeConcurrencyTest {
+class CouponFacadeConcurrencyTest extends AbstractIntegrationTest {
     @Autowired
     private CouponFacade sut;
     @Autowired
@@ -30,13 +29,13 @@ class CouponFacadeConcurrencyTest {
 
     private Coupon coupon;
     private List<User> users;
-
+    private int couponInventory = 100;
     @BeforeEach
     void setUp() {
         users = IntStream.range(0, 10).mapToObj(
                 i -> usersEntityRepository.save(User.of(null, "테스트 계정" + i, 100_000))
         ).toList();
-        coupon = Coupon.of(null, "테스트 쿠폰", "고정", 1000, 100);
+        coupon = Coupon.of(null, "테스트 쿠폰", "고정", 1000, couponInventory);
         couponEntityRepository.save(coupon);
     }
 
@@ -83,7 +82,7 @@ class CouponFacadeConcurrencyTest {
                         .isEqualTo(0),
                 () -> assertThat(coupon.getCouponInventory())
                         .as("남은 쿠폰 갯수")
-                        .isEqualTo(90)
+                        .isEqualTo(couponInventory - successCount.get())
         );
     }
 }
