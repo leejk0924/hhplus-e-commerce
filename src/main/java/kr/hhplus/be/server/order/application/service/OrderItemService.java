@@ -18,11 +18,11 @@ public class OrderItemService {
         return orderItemRepository.findProductsByIds(productIds);
     }
     @Transactional
-    public boolean deductProducts(List<Long> orderItemIds) {
+    public List<OrderItem> deductProducts(List<Long> orderItemIds) {
         try {
             List<OrderItem> orderItems = orderItemRepository.findAllOrderItems(orderItemIds);
             orderItems.forEach(OrderItem::subtractProductStockQuantity);
-            return true;
+            return orderItems;
         }catch (RestApiException e) {
             throw e;
         }
