@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class DailyPopularProductScheduler {
     private final ProductService productService;
-    @Scheduled(cron = "0/1 0 0 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "5 0 0 * * *", zone = "Asia/Seoul")
     @SchedulerLock(
             name = "LOCK:DAILY_POP_PRODUCT",
             lockAtLeastFor = "PT1M",

@@ -48,10 +48,6 @@ class CouponControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.couponId").value(coupon.getId()))
-                .andExpect(jsonPath("$.couponName").value(coupon.getCouponName()))
-                .andExpect(jsonPath("$.discountType").value(coupon.getDiscountType()))
-                .andExpect(jsonPath("$.discountRate").value(coupon.getDiscountRate()))
-                .andExpect(jsonPath("$.expiredAt").value(couponDto.expiredAt().toString()));
+                .andExpect(jsonPath("$.message").value("현재 쿠폰 발급 대기열은 '0'번째 입니다."));
     }
 }

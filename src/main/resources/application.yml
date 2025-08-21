@@ -53,6 +53,9 @@ db:
   product:
     popular: DB:POP_PRODUCT
     ranking: DB:RANKING_PRODUCT
+  coupon:
+    queue: DB:COUPON:QUEUE
+    issued: DB:COUPON:ISSUED
 ---
 spring.config.activate.on-profile: local, test
 
