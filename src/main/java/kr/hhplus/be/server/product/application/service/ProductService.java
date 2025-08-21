@@ -13,9 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,7 +43,7 @@ public class ProductService {
 
         List<Product> products = productRepository.loadTopNProducts(productsId);
         Map<Long, Product> productById = products.stream()
-                .collect(java.util.stream.Collectors.toMap(Product::getId, Function.identity()));
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
 
         return productsId.stream()
                 .map(id -> {
@@ -50,7 +52,7 @@ public class ProductService {
                     Integer sales = topNProducts.get(id);
                     return PopProductDto.toDto(p, sales);
                 })
-                .filter(java.util.Objects::nonNull)
+                .sorted(Comparator.comparingInt(PopProductDto::salesCount).reversed())
                 .toList();
     }
 

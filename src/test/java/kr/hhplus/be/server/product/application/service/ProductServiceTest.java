@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.product.application.service;
 
+import kr.hhplus.be.server.product.application.dto.PopProductDto;
 import kr.hhplus.be.server.product.application.dto.ProductDto;
+import kr.hhplus.be.server.product.application.repository.ProductRankingRepository;
 import kr.hhplus.be.server.product.application.repository.ProductRepository;
 import kr.hhplus.be.server.product.domain.entity.Product;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +13,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -23,6 +27,9 @@ class ProductServiceTest {
     private ProductService sut;
     @Mock
     private ProductRepository productRepository;
+    @Mock
+    private ProductRankingRepository productRankingRepository;
+
     @DisplayName("[Service:단위테스트] : 상품 단건 조회 테스트")
     @Test
     void 상품_조회_서비스_테스트() throws Exception {
@@ -61,17 +68,27 @@ class ProductServiceTest {
     @Test
     void 인기_상품_조회_서비스_테스트() throws Exception {
         // Given
-        Product p1 = Product.of("상품A", 1000, 100);
-        Product p2 = Product.of( "상품B", 1500, 100);
-        Product p3 = Product.of("상품C", 2000, 100);
+        Product p1 = Product.of(1L, "상품A", 1000, 100);
+        Product p2 = Product.of(2L, "상품B", 1500, 100);
+        Product p3 = Product.of(3L, "상품C", 2000, 100);
         List<Product> products = List.of(p1, p2, p3);
-        List<ProductDto> expected = products.stream().map(ProductDto::toDto).toList();
-        given(productRepository.loadPopularProducts()).willReturn(products);
 
+        List<PopProductDto> expected = List.of(
+                PopProductDto.toDto(p3, 30),
+                PopProductDto.toDto(p2, 20),
+                PopProductDto.toDto(p1, 10)
+        );
+        Map<Long, Integer> salesMap = Map.of(
+                3L, 30,
+                2L, 20,
+                1L, 10
+        );
+        given(productRankingRepository.getTopNProducts()).willReturn(salesMap);
+        given(productRepository.loadTopNProducts(anyList())).willReturn(products);
         // WHEN
-        List<ProductDto> productDtos = sut.loadPopularProduct();
+        List<PopProductDto> popProductDtos = sut.loadPopularProduct();
 
         // THEN
-        assertThat(productDtos).isEqualTo(expected);
+        assertThat(popProductDtos).isEqualTo(expected);
     }
 }
