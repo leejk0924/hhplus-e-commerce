@@ -28,4 +28,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public List<Product> loadPopularProducts() {
         return productEntityRepository.findPopularProducts(LocalDate.now().minusDays(3));
     }
+
+    @Override
+    public List<Product> loadTopNProducts(List<Long> productIds) {
+        return productEntityRepository.findAllById(productIds);
+    }
 }

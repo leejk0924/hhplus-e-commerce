@@ -52,6 +52,7 @@ logging:
 db:
   product:
     popular: DB:POP_PRODUCT
+    ranking: DB:RANKING_PRODUCT
 ---
 spring.config.activate.on-profile: local, test
 
