@@ -55,6 +55,10 @@ dependencies {
 	compileOnly("org.projectlombok:lombok:1.18.32")
 	annotationProcessor("org.projectlombok:lombok:1.18.32")
 
+	// shedlock
+	implementation("net.javacrumbs.shedlock:shedlock-spring:6.3.0")
+	implementation("net.javacrumbs.shedlock:shedlock-provider-redis-spring:6.3.0")
+
 	testCompileOnly("org.projectlombok:lombok:1.18.32")
 	testAnnotationProcessor("org.projectlombok:lombok:1.18.32")
 }

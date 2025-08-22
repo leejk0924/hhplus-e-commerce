@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.product.presentation.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.hhplus.be.server.product.application.dto.PopProductDto;
 import kr.hhplus.be.server.product.application.dto.ProductDto;
 import kr.hhplus.be.server.product.application.service.ProductService;
 import kr.hhplus.be.server.product.domain.entity.Product;
@@ -82,8 +83,8 @@ class ProductControllerTest {
         var p1 = Product.of(1L, "best1", 5000, 20);
         var p2 = Product.of(2L, "best2", 6000, 15);
         var popular = List.of(
-                ProductDto.toDto(p1),
-                ProductDto.toDto(p2)
+                PopProductDto.toDto(p1, 10),
+                PopProductDto.toDto(p2, 30)
         );
         given(productService.loadPopularProduct()).willReturn(popular);
 

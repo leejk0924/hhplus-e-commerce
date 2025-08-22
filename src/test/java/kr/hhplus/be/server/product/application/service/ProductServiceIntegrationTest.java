@@ -1,35 +1,34 @@
 package kr.hhplus.be.server.product.application.service;
 
 import jakarta.transaction.Transactional;
-import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
+import kr.hhplus.be.server.product.application.dto.PopProductDto;
 import kr.hhplus.be.server.product.application.dto.ProductDto;
 import kr.hhplus.be.server.product.domain.entity.Product;
 import kr.hhplus.be.server.product.infrastructure.persistence.jpa.ProductEntityRepository;
+import kr.hhplus.be.server.testsupport.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProductServiceIntegrationTest extends AbstractIntegrationTest {
-    @MockitoBean
+    @Autowired
     private ProductEntityRepository productEntityRepository;
     @Autowired
     private ProductService sut;
     private HashMap<Long, Product> dummyDB;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @BeforeEach
     void setUp() {
@@ -40,20 +39,13 @@ public class ProductServiceIntegrationTest extends AbstractIntegrationTest {
     @Test
     void 상품_단건_조회_통합_성공_테스트() throws Exception {
         // Given
-        dummyDB.put(1L, Product.of(1L, "test", 1000, 100));
-        long productId = 1L;
         String productName = "test";
         int price = 1000;
         int stockQuantity = 100;
-
-        given(productEntityRepository.findById(anyLong()))
-                .willAnswer(i -> {
-                    long id = i.getArgument(0);
-                    return Optional.of(dummyDB.get(id));
-                });
+        Product saved = productEntityRepository.save(Product.of(productName, price, stockQuantity));
 
         // When
-        ProductDto result = sut.loadProduct(productId);
+        ProductDto result = sut.loadProduct(saved.getId());
 
         // Then
         assertThat(result.productName()).isEqualTo(productName);
@@ -65,16 +57,22 @@ public class ProductServiceIntegrationTest extends AbstractIntegrationTest {
     void 인기_상품_조회_통합_성공_테스트() throws Exception {
         // Given
         Product p1 = Product.of("상품A", 1000, 100);
-        Product p2 = Product.of( "상품B", 1500, 100);
+        Product p2 = Product.of("상품B", 1500, 100);
         Product p3 = Product.of("상품C", 2000, 100);
         List<Product> products = List.of(p1, p2, p3);
-        List<ProductDto> expected = products.stream().map(ProductDto::toDto).toList();
-        given(productEntityRepository.findPopularProducts(any(LocalDate.class))).willReturn(products);
+        productEntityRepository.saveAll(products);
+        List<PopProductDto> expected = List.of(
+                PopProductDto.toDto(p3, 30),
+                PopProductDto.toDto(p2, 20),
+                PopProductDto.toDto(p1, 10)
+        );
+        redisTemplate.opsForZSet().add("DB:RANKING_PRODUCT:"+ LocalDate.now(), String.valueOf(p3.getId()), 30);
+        redisTemplate.opsForZSet().add("DB:RANKING_PRODUCT:"+ LocalDate.now(), String.valueOf(p2.getId()), 20);
+        redisTemplate.opsForZSet().add("DB:RANKING_PRODUCT:"+ LocalDate.now(), String.valueOf(p1.getId()), 10);
 
         // When
-        List<ProductDto> productDtos = sut.loadPopularProduct();
-
+        List<PopProductDto> popProductDtos = sut.loadPopularProduct();
         // Then
-        assertThat(productDtos).isEqualTo(expected);
+        assertThat(popProductDtos).isEqualTo(expected);
     }
 }

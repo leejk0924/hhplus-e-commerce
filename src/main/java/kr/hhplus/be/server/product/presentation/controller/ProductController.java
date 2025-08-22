@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.product.presentation.controller;
 
+import kr.hhplus.be.server.product.application.dto.PopProductDto;
 import kr.hhplus.be.server.product.application.dto.ProductDto;
 import kr.hhplus.be.server.product.application.service.ProductService;
 import kr.hhplus.be.server.product.presentation.controller.spec.ProductApiSpec;
@@ -30,7 +31,7 @@ public class ProductController implements ProductApiSpec {
     }
     @GetMapping("/products/popular")
     public ResponseEntity<List<ProductResponse.PopularProductsDto>> getPopularProducts() {
-        List<ProductDto> productDtos = productService.loadPopularProduct();
-        return ResponseEntity.ok(productDtos.stream().map(ProductResponse.PopularProductsDto::from).toList());
+        List<PopProductDto> popProductDtos = productService.loadPopularProduct();
+        return ResponseEntity.ok(popProductDtos.stream().map(ProductResponse.PopularProductsDto::from).toList());
     }
 }

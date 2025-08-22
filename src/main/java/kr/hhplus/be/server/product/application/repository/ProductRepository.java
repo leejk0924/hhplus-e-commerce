@@ -9,4 +9,5 @@ public interface ProductRepository {
     List<Product> loadAllProducts();
 
     List<Product> loadPopularProducts();
+    List<Product> loadTopNProducts(List<Long> productIds);
 }
