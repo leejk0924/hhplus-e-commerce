@@ -1,0 +1,76 @@
+version: '3.9'
+
+x-kafka-common: &kafka-common
+  image: bitnami/kafka:3.7.0
+  restart: unless-stopped
+
+x-kafka-base-environment: &kafka-base-environment
+  KAFKA_ENABLE_KRAFT: yes
+  KAFKA_CFG_PROCESS_ROLES: controller,broker
+  KAFKA_KRAFT_CLUSTER_ID: HsDBs9l6UUmQq7Y5E6bNlw
+  KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+  KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
+  KAFKA_CFG_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+  KAFKA_CFG_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+  KAFKA_CFG_TRANSACTION_STATE_LOG_MIN_ISR: 2
+  KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+  ALLOW_PLAINTEXT_LISTENER: yes
+  KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 0@kafka0:9093,1@kafka1:9093,2@kafka2:9093
+
+x-kafka-healthcheck: &kafka-healthcheck
+  healthcheck:
+    test: [ "CMD", "bash", "-c", "kafka-topics.sh --bootstrap-server=localhost:9092 --list || exit 1" ]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+
+services:
+  kafka0:
+    <<: [*kafka-common, *kafka-healthcheck]
+    restart: unless-stopped
+    environment:
+      <<: *kafka-base-environment
+      KAFKA_CFG_NODE_ID: 0
+      KAFKA_CFG_BROKER_ID: 0
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094   # PLAINTEXT : 브로커 내부 통신용, CONTROLLER: 컨트롤러 쿼럼용, EXTERNAL : 외부 클라이언트 접속용
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka0:9092,EXTERNAL://127.0.0.1:29094   # 클라이언트에게 알려줄 주소, 내부 클러스트 : PLAINTEXT, 외부 접근 : EXTERNAL
+    volumes:
+      - ../../data/kafka/kafka0:/bitnami/kafka
+
+  kafka1:
+    <<: [*kafka-common, *kafka-healthcheck]
+    restart: unless-stopped
+    environment:
+      <<: *kafka-base-environment
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_BROKER_ID: 1
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092,EXTERNAL://127.0.0.1:29095
+    volumes:
+      - ../../data/kafka/kafka1:/bitnami/kafka
+
+  kafka2:
+    <<: [*kafka-common, *kafka-healthcheck]
+    restart: unless-stopped
+    environment:
+      <<: *kafka-base-environment
+      KAFKA_CFG_NODE_ID: 2
+      KAFKA_CFG_BROKER_ID: 2
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9092,EXTERNAL://127.0.0.1:29096
+    volumes:
+      - ../../data/kafka/kafka2:/bitnami/kafka
+
+  kafka-web-service:
+    image: provectuslabs/kafka-ui:latest
+    restart: always
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=Local-Kraft-Cluster
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka0:9092,kafka1:9092,kafka2:9092
+      - DYNAMIC_CONFIG_ENABLED=true
+      - KAFKA_CLUSTERS_0_AUDIT_TOPICAUDITENABLED=true
+      - KAFKA_CLUSTERS_0_AUDIT_CONSOLEAUDITENABLED=true
+    depends_on:
+      kafka0: { condition: service_healthy }
+      kafka1: { condition: service_healthy }
+      kafka2: { condition: service_healthy }

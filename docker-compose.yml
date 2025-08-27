@@ -7,6 +7,9 @@ networks:
   cache-net:
     name: cache-net
     driver: bridge
+  kafka-net:
+    name: kafka-net
+    driver: bridge
 
 services:
   mysql:
@@ -55,3 +58,28 @@ services:
       service: sentinel3
     networks: [ cache-net ]
     ports: [ "26381:26379" ]
+
+  kafka0:
+    extends:
+      file: ./infra/kafka/compose.yml
+      service: kafka0
+    networks: [kafka-net]
+    ports: [ '29094:9094' ]
+  kafka1:
+    extends:
+      file: ./infra/kafka/compose.yml
+      service: kafka1
+    networks: [kafka-net]
+    ports: ['29095:9094']
+  kafka2:
+    extends:
+      file: ./infra/kafka/compose.yml
+      service: kafka2
+    networks: [ kafka-net ]
+    ports: [ '29096:9094' ]
+  kafka-web-service:
+    extends:
+      file: ./infra/kafka/compose.yml
+      service: kafka-web-service
+    networks: [ kafka-net ]
+    ports: [ '9000:8080' ]
