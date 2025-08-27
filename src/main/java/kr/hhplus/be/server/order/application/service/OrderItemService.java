@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +31,13 @@ public class OrderItemService {
     }
     public List<Long> searchProductIdsByOrderItemIds(List<Long> orderItemIds) {
         return orderItemRepository.findProductIdsByOrderItemIds(orderItemIds);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, Integer> getProductQuantities(List<Long> orderItemIds) {
+        List<OrderItem> orderItems = orderItemRepository.findAllOrderItems(orderItemIds);
+        return orderItems.stream().collect(Collectors.toMap(orderItem -> orderItem.getProduct().getId(),
+                OrderItem::getQuantity,
+                Integer::sum));
     }
 }

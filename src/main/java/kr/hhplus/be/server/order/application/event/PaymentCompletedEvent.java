@@ -1,12 +1,12 @@
 package kr.hhplus.be.server.order.application.event;
 
-import kr.hhplus.be.server.config.event.AsyncApplicationEvent;
+import kr.hhplus.be.server.config.event.DispatchableEvent;
 import kr.hhplus.be.server.order.application.dto.OrderItemEventDto;
 import lombok.Getter;
 
 import java.util.List;
 
-public class PaymentCompletedEvent extends AsyncApplicationEvent {
+public class PaymentCompletedEvent extends DispatchableEvent {
     @Getter
     private final List<OrderItemEventDto> orderItems;
 

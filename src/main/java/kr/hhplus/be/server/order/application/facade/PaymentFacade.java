@@ -5,6 +5,7 @@ import kr.hhplus.be.server.common.redis.lock.key.OrderItemLockKeyGenerator;
 import kr.hhplus.be.server.coupon.domain.entity.UserCoupon;
 import kr.hhplus.be.server.order.application.dto.OrderItemEventDto;
 import kr.hhplus.be.server.order.application.dto.PayCommand;
+import kr.hhplus.be.server.order.application.event.DataFlatformEvent;
 import kr.hhplus.be.server.order.application.event.PaymentCompletedEvent;
 import kr.hhplus.be.server.order.application.service.OrderItemService;
 import kr.hhplus.be.server.order.application.service.OrderService;
@@ -37,5 +38,6 @@ public class PaymentFacade {
         eventPublisher.publishEvent(new PaymentCompletedEvent(order.getId(), orderItems.stream()
                 .map(OrderItemEventDto::from)
                 .toList(), true));
+        eventPublisher.publishEvent(new DataFlatformEvent(order.getId(), order, true));
     }
 }

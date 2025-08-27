@@ -10,9 +10,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 
-public class AsyncApplicationEventMulticaster extends SimpleApplicationEventMulticaster  {
+public class ApplicationEventDispatchMulticaster extends SimpleApplicationEventMulticaster  {
 
-    public AsyncApplicationEventMulticaster(final AsyncTaskExecutor asyncTaskExecutor) {
+    public ApplicationEventDispatchMulticaster(final AsyncTaskExecutor asyncTaskExecutor) {
         setTaskExecutor(Objects.requireNonNull(asyncTaskExecutor));
     }
 
@@ -30,8 +30,8 @@ public class AsyncApplicationEventMulticaster extends SimpleApplicationEventMult
     }
 
     protected boolean checkAsyncEvent(final ApplicationEvent event) {
-        if (event instanceof AsyncApplicationEvent) {
-            return ((AsyncApplicationEvent) event).isAsync();
+        if (event instanceof DispatchableEvent) {
+            return ((DispatchableEvent) event).isAsync();
         }
         return false;
     }
