@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.config.async;
+package kr.hhplus.be.server.config.event;
 
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -6,18 +6,19 @@ import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ApplicationEventMulticaster;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.task.TaskDecorator;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.scheduling.support.TaskUtils;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.concurrent.Executor;
 
 @Configuration
 @EnableAsync
-public class AsyncConfig implements AsyncConfigurer {
+public class AsyncConfig {
     @Bean(name = TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME)
     public ThreadPoolTaskExecutor asyncTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -33,15 +34,12 @@ public class AsyncConfig implements AsyncConfigurer {
         return executor;
     }
 
-    // @Async 가 실행될 Executor 지정
-    @Override
-    public Executor getAsyncExecutor() {
-        return asyncTaskExecutor();
-    }
-
-    @Override
-    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
-        return new AsyncExceptionHandler();
+    // ApplicationEventPublisher 가 사용할 멀티캐스터 교체
+    @Bean(name = AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME)
+    public ApplicationEventMulticaster applicationEventMulticaster(ThreadPoolTaskExecutor asyncTaskExecutor) {
+        AsyncApplicationEventMulticaster multicaster = new AsyncApplicationEventMulticaster(asyncTaskExecutor);
+        multicaster.setErrorHandler(TaskUtils.LOG_AND_SUPPRESS_ERROR_HANDLER);
+        return multicaster;
     }
 
     @Slf4j

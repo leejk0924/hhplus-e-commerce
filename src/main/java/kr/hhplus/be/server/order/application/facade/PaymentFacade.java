@@ -36,6 +36,6 @@ public class PaymentFacade {
         orderService.savePayment(order);
         eventPublisher.publishEvent(new PaymentCompletedEvent(order.getId(), orderItems.stream()
                 .map(OrderItemEventDto::from)
-                .toList()));
+                .toList(), true));
     }
 }
