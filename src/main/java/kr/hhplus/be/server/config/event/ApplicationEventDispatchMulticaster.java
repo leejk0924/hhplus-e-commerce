@@ -1,0 +1,38 @@
+package kr.hhplus.be.server.config.event;
+
+import io.micrometer.common.lang.Nullable;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.event.SimpleApplicationEventMulticaster;
+import org.springframework.core.ResolvableType;
+import org.springframework.core.task.AsyncTaskExecutor;
+
+import java.util.Objects;
+import java.util.Optional;
+
+
+public class ApplicationEventDispatchMulticaster extends SimpleApplicationEventMulticaster  {
+
+    public ApplicationEventDispatchMulticaster(final AsyncTaskExecutor asyncTaskExecutor) {
+        setTaskExecutor(Objects.requireNonNull(asyncTaskExecutor));
+    }
+
+    @Override
+    public void multicastEvent(final ApplicationEvent event, @Nullable ResolvableType eventType) {
+        final ResolvableType type =
+                Optional.ofNullable(eventType).orElseGet(() -> ResolvableType.forInstance(event));
+        getApplicationListeners(event, type).forEach(listener ->
+                Optional.ofNullable(getTaskExecutor())
+                        .filter(executor -> checkAsyncEvent(event))
+                        .ifPresentOrElse(
+                                executor -> executor.execute(() -> invokeListener(listener, event)),
+                                () -> invokeListener(listener, event))
+        );
+    }
+
+    protected boolean checkAsyncEvent(final ApplicationEvent event) {
+        if (event instanceof DispatchableEvent) {
+            return ((DispatchableEvent) event).isAsync();
+        }
+        return false;
+    }
+}
