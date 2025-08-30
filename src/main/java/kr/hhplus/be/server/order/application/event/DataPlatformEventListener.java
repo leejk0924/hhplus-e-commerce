@@ -9,7 +9,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class DataPlatformEventListener {
-    private DataPlatFormService dataPlatFormService;
+    private final DataPlatFormService dataPlatFormService;
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleDataPlatformEvent(DataFlatformEvent event) {
