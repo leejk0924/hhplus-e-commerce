@@ -83,3 +83,21 @@ services:
       service: kafka-web-service
     networks: [ kafka-net ]
     ports: [ '9000:8080' ]
+  kafka-exporter:
+    extends:
+      file: ./infra/kafka/compose.yml
+      service: kafka-exporter
+    networks: [kafka-net]
+    ports: ['9308:9308']
+  prometheus:
+    extends:
+      file: ./infra/monitor/compose.yml
+      service: prometheus
+    networks: [kafka-net, db-net, cache-net]
+    ports: ['9090:9090']
+  grafana:
+    extends:
+      file: ./infra/monitor/compose.yml
+      service: grafana
+    networks: [ kafka-net, db-net, cache-net ]
+    ports: ['3000:3000']
