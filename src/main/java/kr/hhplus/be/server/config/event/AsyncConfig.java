@@ -34,8 +34,8 @@ public class AsyncConfig {
         return executor;
     }
 
-    // ApplicationEventPublisher 가 사용할 멀티캐스터 교체
-    @Bean(name = AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME)
+    // 이벤트 발행을 비동기로 동작하고 있어서 이벤트 발행이 안되고 있기에 현재 사용하지 않음
+//    @Bean(name = AbstractApplicationContext.APPLICATION_EVENT_MULTICASTER_BEAN_NAME)
     public ApplicationEventMulticaster applicationEventMulticaster(ThreadPoolTaskExecutor asyncTaskExecutor) {
         ApplicationEventDispatchMulticaster multicaster = new ApplicationEventDispatchMulticaster(asyncTaskExecutor);
         multicaster.setErrorHandler(TaskUtils.LOG_AND_SUPPRESS_ERROR_HANDLER);
