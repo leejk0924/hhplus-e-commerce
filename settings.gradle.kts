@@ -1,1 +1,3 @@
-rootProject.name = "server"
+rootProject.name = "hhplus-server"
+
+include("common", "infrastructure-kafka", "server")
