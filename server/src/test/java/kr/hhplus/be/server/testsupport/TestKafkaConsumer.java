@@ -2,6 +2,7 @@ package kr.hhplus.be.server.testsupport;
 
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,11 +16,12 @@ public class TestKafkaConsumer {
             topics = "test-topic",
             groupId = "test-group",
             properties = {
-                    "auto.offset.reset=earliest"
+                    "auto.offset.reset=latest"
             }
     )
-    public void listen(String message) {
+    public void listen(String message, Acknowledgment acknowledgment) {
         messageQueue.offer(message);
+        acknowledgment.acknowledge();
     }
 
     public String getReceivedMessage(long timeout, TimeUnit unit) throws InterruptedException {
