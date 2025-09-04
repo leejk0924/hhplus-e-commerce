@@ -17,10 +17,11 @@ public class CouponController implements CouponApiSpec {
     private final CouponFacade couponFacade;
     @GetMapping("/coupon/{couponId}/first-come/users/{userId}")
     public ResponseEntity<CouponResponse.IssueCouponQueueDto> issueCouponFirstCome(
-            @PathVariable Long userId,
-            @PathVariable Long couponId
+            @PathVariable Long couponId,
+            @PathVariable Long userId
     ) {
-        Integer waitingNum = couponFacade.enterCouponQueue(userId, couponId);
-        return ResponseEntity.ok(CouponResponse.IssueCouponQueueDto.of(waitingNum));
+        couponFacade.enterCouponQueueFromKafka(userId, couponId);
+
+        return ResponseEntity.ok(CouponResponse.IssueCouponQueueDto.of());
     }
 }

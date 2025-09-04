@@ -28,8 +28,8 @@ public class CouponResponse {
     public record IssueCouponQueueDto(
             String message
     ) {
-        public static IssueCouponQueueDto of(int queueNo) {
-            return new IssueCouponQueueDto("현재 쿠폰 발급 대기열은 '" + queueNo + "'번째 입니다.");
+        public static IssueCouponQueueDto of() {
+            return new IssueCouponQueueDto("쿠폰 발급 요청하였습니다.");
         }
     }
 }

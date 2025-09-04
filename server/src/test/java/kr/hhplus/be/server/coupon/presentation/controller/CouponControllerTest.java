@@ -48,6 +48,6 @@ class CouponControllerTest {
                                 .accept(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("현재 쿠폰 발급 대기열은 '0'번째 입니다."));
+                .andExpect(jsonPath("$.message").value("쿠폰 발급 요청하였습니다."));
     }
 }
