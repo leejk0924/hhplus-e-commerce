@@ -2,12 +2,17 @@
 INSERT INTO USERS (ID, USER_NAME, POINT_BALANCE, CREATED_AT) VALUES
                                                                  (1, '홍길동', 5000, CURRENT_TIMESTAMP),
                                                                  (2, '이순신', 10000, CURRENT_TIMESTAMP),
-                                                                 (3, '김유신', 0, CURRENT_TIMESTAMP);
+                                                                 (3, '김유신', 0, CURRENT_TIMESTAMP),
+                                                                 (100, '테스트유저100', 50000, CURRENT_TIMESTAMP),
+                                                                 (101, '테스트유저101', 30000, CURRENT_TIMESTAMP),
+                                                                 (102, '테스트유저102', 20000, CURRENT_TIMESTAMP);
 
 -- COUPON
 INSERT INTO COUPON (ID, COUPON_NAME, DISCOUNT_TYPE, DISCOUNT_RATE, COUPON_INVENTORY, CREATED_AT) VALUES
-                                                                                                     (1, 'WELCOME10', 'PERCENT', 10, 100, CURRENT_TIMESTAMP),
-                                                                                                     (2, 'SAVE5000', 'AMOUNT', 5000, 50, CURRENT_TIMESTAMP);
+                                                                                                     (1, 'WELCOME10', 'PERCENT', 10, 1000, CURRENT_TIMESTAMP),
+                                                                                                     (2, 'SAVE5000', 'AMOUNT', 5000, 500, CURRENT_TIMESTAMP),
+                                                                                                     (3, 'K6테스트쿠폰', 'AMOUNT', 1000, 10000, CURRENT_TIMESTAMP),
+                                                                                                     (4, '대용량테스트쿠폰', 'PERCENT', 15, 50000, CURRENT_TIMESTAMP);
 
 -- USERS_COUPON
 INSERT INTO USERS_COUPON (ID, USER_ID, COUPON_ID, COUPON_STATUS, REDEEMED_AT, EXPIRED_AT, CREATED_AT) VALUES
