@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.order.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import kr.hhplus.be.server.common.entity.BaseTime;
 import kr.hhplus.be.server.exception.RestApiException;
@@ -22,9 +23,11 @@ public class OrderItem extends BaseTime {
     @Column(name = "ID", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ORDER_ID", nullable = false)
     private Order order;
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PRODUCT_ID", nullable = false)
     private Product product;
