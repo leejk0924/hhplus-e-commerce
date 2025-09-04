@@ -42,6 +42,22 @@ spring:
           - localhost:26380
           - localhost:26381
       connect-timeout: 3s
+  kafka:
+    bootstrap-servers: localhost:29094,localhost:29095,localhost:29096
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 3
+    consumer:
+      group-id: ecommerce
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      auto-commit-interval: 1000
+      properties:
+        spring.json.trusted.packages: "kr.baul.server.*"
+
 logging:
   level:
     org.redisson: info

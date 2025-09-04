@@ -3,6 +3,7 @@ package kr.hhplus.be.server.testsupport;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
@@ -10,17 +11,19 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.kafka.KafkaContainer;
 
 @ActiveProfiles("test")
 @Tag("integrationTest")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Sql(value = "classpath:sql/truncate-all.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Import({MySQLTestContainerConfig.class, RedisTestContainerConfig.class, TestCacheConfiguration.class})
+@ComponentScan(basePackages = "kr.hhplus.be.server")
+@Import({MySQLTestContainerConfig.class, RedisTestContainerConfig.class, TestCacheConfiguration.class, KafkaTestContainerConfig.class})
 public class AbstractIntegrationTest {
     static GenericContainer<?> redisContainer = RedisTestContainerConfig.getContainer();
     static MySQLContainer<?> mysqlContainer = MySQLTestContainerConfig.getContainer();
-
+    static KafkaContainer kafkaContainer = KafkaTestContainerConfig.getContainer();
     @DynamicPropertySource
     static void registerProps(DynamicPropertyRegistry r) {
         r.add("spring.datasource.url", mysqlContainer::getJdbcUrl);
@@ -41,5 +44,7 @@ public class AbstractIntegrationTest {
                         "threads: 0\n" +
                         "nettyThreads: 0\n"
         );
+//        r.add("spring.kafka.bootstrap-servers", ()-> kafkaContainer.getHost()+":"+kafkaContainer.getMappedPort(19092));
+        r.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers);
     }
 }
