@@ -27,8 +27,8 @@ const COUPON_ID = 1;
 
 export default function main() {
     group('선착순 쿠폰 신청', () => {
-        // userId는 가상으로 생성 (동시 접속자 구분용)
-        const userId = randomIntBetween(1, 1000000);
+        // VU와 iteration을 조합하여 고유한 userId 생성 (1001-2000 범위 내)
+        const userId = 1001 + ((__VU - 1) % 1000);
 
         // 엔드포인트 호출
         const url = `${BASE_URL}/coupon/${COUPON_ID}/first-come/users/${userId}`;
