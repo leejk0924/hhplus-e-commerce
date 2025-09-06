@@ -74,3 +74,16 @@ services:
       kafka0: { condition: service_healthy }
       kafka1: { condition: service_healthy }
       kafka2: { condition: service_healthy }
+
+  kafka-exporter:
+    image: danielqsj/kafka-exporter:latest
+    restart: unless-stopped
+    command:
+      - "--kafka.server=kafka0:9092"
+      - "--kafka.server=kafka1:9092"
+      - "--kafka.server=kafka2:9092"
+      - "--web.listen-address=:9308"
+    depends_on:
+      kafka0: { condition: service_healthy }
+      kafka1: { condition: service_healthy }
+      kafka2: { condition: service_healthy }
