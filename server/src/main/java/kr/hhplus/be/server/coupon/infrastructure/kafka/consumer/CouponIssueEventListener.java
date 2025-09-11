@@ -13,6 +13,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -27,22 +29,23 @@ public class CouponIssueEventListener {
             containerFactory = "kafkaListenerContainerFactory"
     )
     public void handleCouponIssueEvent(
-            @Payload CouponIssueEvent event,
+            @Payload Map<String, Object> eventMap,
             @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
             @Header(KafkaHeaders.RECEIVED_PARTITION) int partition,
             @Header(KafkaHeaders.OFFSET) long offset,
             Acknowledgment acknowledgment
     ) {
         try {
-            couponFacade.processCouponIssueKafka(event.getCouponId(), event.getUserId());
+            Long couponId = ((Number) eventMap.get("couponId")).longValue();
+            Long userId = ((Number) eventMap.get("userId")).longValue();
+            log.info("쿠폰 발급 이벤트 처리: couponId={}, userId={}", couponId, userId);
             
-            // Kafka 수동 커밋
+            couponFacade.processCouponIssueKafka(couponId, userId);
+
             acknowledgment.acknowledge();
         } catch (Exception e) {
-            log.error("쿠폰 발급 처리 중 오류 발생. couponId: {}, userId: {}, error: {}", 
-                    event.getCouponId(), event.getUserId(), e.getMessage(), e);
-            
-            // 예외 발생 시 메시지를 재처리하거나 DLQ로 보낼 수 있도록 예외를 다시 던짐
+            log.error("쿠폰 발급 처리 중 오류 발생. eventMap: {}, error: {}", 
+                    eventMap, e.getMessage(), e);
             throw e;
         }
     }
