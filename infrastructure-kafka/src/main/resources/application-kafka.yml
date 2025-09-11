@@ -4,7 +4,11 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      retries: 3
+      retries: 1
+      acks: 1
+      linger-ms: 5
+      batch-size: 16384
+      buffer-memory: 33554432
     consumer:
       group-id: ecommerce
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
