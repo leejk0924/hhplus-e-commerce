@@ -15,7 +15,14 @@ export const options = {
     ],
     thresholds: {
         http_req_duration: ['p(99)<1000'],
-        http_req_failed: ['rate<0.05']
+        'checks{name:응답 성공}': ['rate>0.99'],  // 비즈니스 로직 성공률 99% 이상
+        'checks{name:응답시간 OK}': ['rate>0.99']   // 응답시간 체크 99% 이상
+    },
+    ext: {
+        loadimpact: {
+            projectID: 0,
+            name: "Coupon Issue Load Test"
+        }
     }
 };
 
