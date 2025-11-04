@@ -8,8 +8,9 @@ spring:
     name: HangHaePlusDataSource
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      maximum-pool-size: 3
-      connection-timeout: 10000
+      maximum-pool-size: 20
+      minimum-idle: 10
+      connection-timeout: 20000
       max-lifetime: 60000
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
@@ -22,6 +23,8 @@ spring:
       hibernate.hibernate.format_sql: true
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
+      hibernate.hibernate.jdbc.batch_size: 50
+      hibernate.hibernate.order_updates: true
   cache:
     type: redis
     redis:
@@ -50,6 +53,15 @@ logging:
     org.redisson.client.protocol: info
     org.springframework.cache: DEBUG
     org.springframework.data.redis: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
 
 db:
   product:

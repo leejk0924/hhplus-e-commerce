@@ -1,10 +1,9 @@
 package kr.hhplus.be.server.coupon.application.service;
 
 import kr.hhplus.be.infrastructure.kafka.common.Topics;
-import kr.hhplus.be.server.coupon.domain.entity.Coupon;
+import kr.hhplus.be.infrastructure.kafka.repository.KafkaRepository;
 import kr.hhplus.be.server.coupon.infrastructure.kafka.dto.CouponIssueEvent;
 import kr.hhplus.be.server.coupon.infrastructure.persistence.redis.RedisCouponRepository;
-import kr.hhplus.be.infrastructure.kafka.repository.KafkaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,13 +20,10 @@ public class CouponIssueService {
     private static final String REDIS_QUEUE_KEY_PREFIX = "coupon:queue:";
     
     public void requestCouponIssue(Long couponId, Long userId) {
-        // 쿠폰 재고 확인
-        Coupon coupon = couponService.hasRemainCoupon(couponId);
-
-        CouponIssueEvent event = CouponIssueEvent.of(coupon.getId(), userId);
+        CouponIssueEvent event = CouponIssueEvent.of(couponId, userId);
         kafkaRepository.sendMessage(
             Topics.COUPON_ISSUE.getTopicName(),
-            String.valueOf(coupon.getId()),
+            String.valueOf(couponId),
             event
         );
         

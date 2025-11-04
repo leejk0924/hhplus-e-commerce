@@ -16,3 +16,16 @@ services:
     volumes:
       - ../../data/infra/grafana/data:/var/lib/grafana
       - ../../data/infra/grafana/log:/var/log/grafana
+
+  influxdb:
+    image: influxdb:1.8.10
+    restart: unless-stopped
+    environment:
+      INFLUXDB_DB: k6
+      INFLUXDB_USER: k6
+      INFLUXDB_USER_PASSWORD: k6
+      INFLUXDB_ADMIN_USER: admin
+      INFLUXDB_ADMIN_PASSWORD: admin
+    volumes:
+      - ../../data/infra/influxdb/data:/var/lib/influxdb
+      - ../../data/infra/influxdb/config:/etc/influxdb

@@ -101,3 +101,17 @@ services:
       service: grafana
     networks: [ kafka-net, db-net, cache-net ]
     ports: ['3000:3000']
+  influxdb:
+    extends:
+      file: ./infra/monitor/compose.yml
+      service: influxdb
+    networks: [ kafka-net, db-net, cache-net ]
+    ports: ['8086:8086']
+  mysql-exporter:
+    extends:
+      file: ./infra/mysql/compose.yml
+      service: mysql-exporter
+    networks: [db-net]
+    ports: ['9104:9104']
+    depends_on:
+      - mysql
